@@ -10,7 +10,7 @@ git -C <local-path>
 git -C <local-path>
 git -C <local-path>
 gh auth status
-gh repo view eish1997/local-service-factory-dev --json nameWithOwner,isPrivate,url,defaultBranchRef
+gh repo view fang1776358081-arch/local-service-factory --json nameWithOwner,isPrivate,url,defaultBranchRef
 ```
 
 检查 remote 前确保输出不会暴露嵌入 URL 的凭证；必要时先脱敏 URL，只显示主机、所有者和仓库。不要输出 token。浏览器登录不等于 CLI 登录。当前电脑工具常见位置为 `<local-path>`、`<local-path>`；PATH 缺失可直接使用。

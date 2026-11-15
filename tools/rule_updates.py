@@ -126,10 +126,26 @@ def require_repository(record, cfg):
         raise ValueError('规则缓存或计划不属于当前仓库；请同步当前仓库并重新生成计划，旧记录保留')
 
 
+def migration_source(cfg):
+    configured=cfg.get('legacy_rules_repository')
+    if 'legacy_rules_repository' in cfg and not isinstance(configured,dict):
+        raise ValueError('旧规则仓库身份配置无效')
+    if isinstance(configured,dict):
+        owner=configured.get('owner');repo=configured.get('repo')
+        if not isinstance(owner,str) or not owner or not isinstance(repo,str) or not repo:
+            raise ValueError('旧规则仓库身份配置无效')
+        if (owner.lower(),repo.lower())==(cfg['owner'].lower(),cfg['rules_repo'].lower()):
+            raise ValueError('旧规则仓库不能与当前规则仓库相同')
+        return {'owner':owner,'repo':repo}
+    if cfg['owner']=='eish1997' and cfg['rules_repo']=='local-service-factory-dev':
+        return {'owner':'eish1997','repo':'local-service-factory-rules'}
+    return None
+
+
 def tracked_head(cfg):
     tracked = local()/'remote_head.json'
     if not tracked.exists():
-        if cfg['owner']=='eish1997' and cfg['rules_repo']=='local-service-factory-dev':raise ValueError('统一仓库尚无同步基准；首次迁移必须显式 migration_from_legacy')
+        if migration_source(cfg):raise ValueError('统一仓库尚无同步基准；首次迁移必须显式 migration_from_legacy')
         return {'sha': None, 'files': {}, 'repository': repository_identity(cfg)}
     head = json.loads(tracked.read_text(encoding='utf-8'))
     require_repository(head, cfg)
@@ -137,18 +153,19 @@ def tracked_head(cfg):
 
 
 def migration_head(cfg):
-    if os.environ.get('FACTORY_DATA_HOME') or cfg['owner']!='eish1997' or cfg['rules_repo']!='local-service-factory-dev':
+    source=migration_source(cfg)
+    if os.environ.get('FACTORY_DATA_HOME') or not source:
         raise ValueError('规则迁移仅允许维护端使用已记录的统一仓库')
     repo=f'/repos/{cfg["owner"]}/{cfg["rules_repo"]}'
     metadata=protocol.github('GET',repo)
     if not metadata or not metadata.get('default_branch'):raise ValueError('目标仓库不存在或不可访问')
     if protocol.github('GET',repo+'/contents/release-index.json') is not None:
         raise ValueError('目标索引已存在，请正常同步，不重复初始化')
-    old_cfg={**cfg,'rules_repo':'local-service-factory-rules'}
+    old_cfg={**cfg,'owner':source['owner'],'rules_repo':source['repo']}
     revision,envelope,payload=remote_index(old_cfg)
-    expected=f'https://github.com/{cfg["owner"]}/local-service-factory-rules/releases/download/rules-{payload["version"]}/rules.zip'
+    expected=f'https://github.com/{source["owner"]}/{source["repo"]}/releases/download/rules-{payload["version"]}/rules.zip'
     if payload.get('url')!=expected:raise ValueError('旧规则索引来源不匹配')
-    return {'sha':None,'files':{},'repository':repository_identity(cfg),
+    return {'sha':None,'files':payload['files'],'repository':repository_identity(cfg),
             'migration':{'from_repository':repository_identity(old_cfg),'index_sha':revision,'version_floor':payload['version'],'envelope':envelope}}
 
 
@@ -339,7 +356,7 @@ def publish(request):
     if not commit or commit.get('sha')!=source_sha:raise ValueError('规则源码提交尚未存在于目标仓库')
     current=protocol.github('GET',repo+'/contents/release-index.json')
     current_sha=current['sha'] if current else None
-    if current is None and cfg['owner']=='eish1997' and cfg['rules_repo']=='local-service-factory-dev' and not plan.get('migration'):
+    if current is None and migration_source(cfg) and not plan.get('migration'):
         raise ValueError('新仓空索引只能通过显式迁移计划初始化')
     if plan.get('migration'):
         old_payload=protocol.verify(plan['migration']['envelope'],cfg['public_keys'])

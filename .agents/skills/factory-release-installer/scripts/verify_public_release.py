@@ -137,12 +137,18 @@ def main():
         raise ValueError('Public download evidence must be separate from local build artifacts')
     destination.mkdir(parents=True, exist_ok=True)
     target = plan.get('target', 'unified')
+    owner = config['owner']
     repo = config['software_repo']
-    if target == 'legacy-software' and config['owner'] == 'eish1997' and repo == 'local-service-factory-dev':
+    configured = config.get('legacy_software_repository')
+    if target == 'legacy-software' and isinstance(configured, dict):
+        owner, repo = configured.get('owner'), configured.get('repo')
+        if not isinstance(owner, str) or not owner or not isinstance(repo, str) or not repo:
+            raise ValueError('Invalid legacy software repository identity')
+    elif target == 'legacy-software' and owner == 'eish1997' and repo == 'local-service-factory-dev':
         repo = 'local-service-factory-releases'
     elif target != 'unified':
         raise ValueError('Unexpected publication target')
-    base = protocol.public_url(f"https://github.com/{config['owner']}/{repo}/releases/download/v{version}/")
+    base = protocol.public_url(f"https://github.com/{owner}/{repo}/releases/download/v{version}/")
     proxy = urllib.request.getproxies().get('https') or urllib.request.getproxies().get('http')
     manifest = destination / 'software-manifest.json'
     if not manifest.is_file():

@@ -1,6 +1,6 @@
 # 统一仓库开发与上线检查
 
-开发候选统一使用 eish1997/local-service-factory-dev，软件 vX.Y.Z 与规则 rules-整数版本独立发布。源码 push 不构建、不发布；规则 Release 固定不占 Latest。仓库已公开并发布 1.4.18；旧分发入口继续服务。未来发布仍须对应范围授权。
+开发候选统一使用 fang1776358081-arch/local-service-factory，软件 vX.Y.Z 与规则 rules-整数版本独立发布。源码 push 不构建、不发布；规则 Release 固定不占 Latest。仓库是独立公开项目，不是原仓 fork；原仓只保留历史证据。未来发布仍须对应范围授权。
 
 ## 源码同步与签名索引
 

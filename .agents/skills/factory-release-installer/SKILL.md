@@ -14,6 +14,8 @@ description: "为本地生活服务图片工厂构建、验证并发布 Windows 
 
 正式软件与规则发布计划绑定干净已提交源码 SHA；软件构建保存 stage-provenance/build-provenance，发布回传 source_sha。过渡 target=legacy-software 不改变包内新地址；首次规则迁移显式 migration_from_legacy=true，按执行台账的旧版本下界验证。updates recover 默认只读，明确恢复授权才完成已验证公开版本指针，不重传不明附件。
 
+跨 GitHub 账号再次迁移时，旧软件入口必须由 `distribution/update-config.json` 的 `legacy_software_repository.owner/repo` 明确列出；不能只改当前 owner 后沿用同名猜测。发布和公开下载验证都要分别核对目标 owner/repo，旧入口只用于同一桥接产物的过渡发布。
+
 ## 定位与授权
 
 在含 `factory.py` 和 `distribution/update-config.json` 的维护项目执行。当前项目为 `<project-root>`；优先使用用户指定项目，不能把本 skill 泛用于其他软件。先读项目 `AGENTS.md`、`agent_memory/current_state.md`、`distribution/README.md`，以当前代码及配置为准，不沿用历史版本号。

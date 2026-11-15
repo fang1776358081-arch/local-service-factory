@@ -55,8 +55,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "eish1997",
-        "repo": "local-service-factory-dev"
+        "owner": "fang1776358081-arch",
+        "repo": "local-service-factory"
       }
     ]
   },

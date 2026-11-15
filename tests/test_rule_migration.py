@@ -59,3 +59,21 @@ class RuleMigrationTests(unittest.TestCase):
         with patch.dict(os.environ,{},clear=True),patch.object(rules.paths,'data_root',return_value=self.home),patch.object(rules,'export_documents') as export:
             with self.assertRaisesRegex(ValueError,'显式'):rules.release_plan({'version':'201'})
             export.assert_not_called()
+
+    def test_cross_owner_migration_uses_explicit_old_unified_repository(self):
+        self.cfg.update(owner='new-owner',rules_repo='new-repo',legacy_rules_repository={'owner':'eish1997','repo':'local-service-factory-dev'})
+        envelope,data=self.bundle(version='200')
+        envelope['payload']['url']='https://github.com/eish1997/local-service-factory-dev/releases/download/rules-200/rules.zip'
+        envelope['signature']=base64.b64encode(self.key.sign(protocol.canonical(envelope['payload']))).decode()
+        seen=[]
+        def remote(old_cfg):
+            seen.append((old_cfg['owner'],old_cfg['rules_repo']))
+            return 'old-index',envelope,envelope['payload']
+        with patch.dict(os.environ,{},clear=True),patch.object(rules.paths,'data_root',return_value=self.home),patch.object(protocol,'github',side_effect=lambda method,url,*a,**k:None if '/contents/' in url else {'default_branch':'main'}),patch.object(rules,'remote_index',side_effect=remote),patch.object(rules,'release_source_sha',return_value='a'*40):
+            result=rules.release_plan({'version':'201','migration_from_legacy':True})
+        self.assertEqual(seen,[('eish1997','local-service-factory-dev')])
+        self.assertEqual(result['changed_files'],[])
+        self.assertEqual(result['migration']['from_repository'],{'owner':'eish1997','repo':'local-service-factory-dev'})
+        payload=json.loads((rules.local()/'release_plans/201/payload.json').read_text(encoding='utf-8'))
+        self.assertEqual(payload['url'],'https://github.com/new-owner/new-repo/releases/download/rules-201/rules.zip')
+        with self.assertRaises(ValueError):rules.migration_source({**self.cfg,'legacy_rules_repository':'invalid'})

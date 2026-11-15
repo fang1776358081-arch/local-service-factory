@@ -2,7 +2,7 @@
 
 本仓库维护源码、Windows 软件与项目规则的统一发布流程。统一仓库已公开，软件 1.4.19 与规则 1794662868654979100 已发布；旧仓保留过渡包和历史下载。
 
-- 安装使用：从[软件 1.4.19](https://github.com/eish1997/local-service-factory-dev/releases/tag/v1.4.19) 下载 LocalServiceFactory-1.4.19-setup.exe。GitHub Source code ZIP 只是源码，不是安装包。
+- 安装使用：从[软件 1.4.22](https://github.com/fang1776358081-arch/local-service-factory/releases/tag/v1.4.22) 下载 LocalServiceFactory-1.4.22-setup.exe。GitHub Source code ZIP 只是源码，不是安装包。
 - 旧版过渡与历史下载：[旧软件仓](https://github.com/eish1997/local-service-factory-releases/releases/latest)。旧规则仓保留历史与过渡入口。
 - 规则以 rules-递增版本标签独立发布，通过签名 release-index.json 发现；更新规则通常不需要重装软件，最低兼容版本由清单约束。
 - [开发与 Git 同步](development/README.md) · [迁移与完整上线清单](development/REPOSITORY_MIGRATION.md) · [执行台账](development/UNIFIED_REPOSITORY_EXECUTION_PLAN.md)

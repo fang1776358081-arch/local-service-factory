@@ -1,6 +1,6 @@
 ## 软件 1.4.22 已发布（2026-11-15）
 
-[下载 1.4.22](https://github.com/eish1997/local-service-factory-dev/releases/tag/v1.4.22)。新增 Codex 内置生成的任务、结果回填、排版与恢复入口，保留 API 流程；修复原生执行/回填/排版期间的安装保护及安装开始后的写入准入。源码来源38f767dbdf7d4854bc0efa4b177a7d27c58b2095。安装包124594822字节，SHA256 `e0c00d38fac5f59770ab26588228d2ee886e5d99a243cd207730f5f746ddf406`。
+[下载 1.4.22](https://github.com/fang1776358081-arch/local-service-factory/releases/tag/v1.4.22)。新增 Codex 内置生成的任务、结果回填、排版与恢复入口，保留 API 流程；修复原生执行/回填/排版期间的安装保护及安装开始后的写入准入。源码来源38f767dbdf7d4854bc0efa4b177a7d27c58b2095。安装包124594822字节，SHA256 `e0c00d38fac5f59770ab26588228d2ee886e5d99a243cd207730f5f746ddf406`。
 
 三项附件公开下载及Ed25519签名验证通过，Latest=v1.4.22，发布锁已释放。规则内容/签名索引保持1794662868654979100，未重复发布。更新14项、传输5项、正式stage初始化2项通过；复用相同产品代码31项原生回归和七图真实链路，用户图片验收通过。3036个运行时文件、144个包内引擎文件一致，正式包九项目/双生成入口启动通过。隔离身份1.4.20→1.4.21真实NSIS及互斥已验证；本轮未替换本机正式安装，未重验全新Windows或正式身份机器级覆盖升级。无Authenticode证书，整套test_factory_safety按约束未运行；不新增生图，不删除旧仓。
 
@@ -8,13 +8,13 @@
 
 ## 软件 1.4.19 已发布（2026-11-15）
 
-[下载 1.4.19](https://github.com/eish1997/local-service-factory-dev/releases/tag/v1.4.19)。本版打包已完成的维护端发布链接/验证工具修正；同步版本及公开克隆说明，没有修改客户端更新器、安装布局、生产提示词或运行时依赖。来源提交 5dc6e7b，安装器 SHA256 `5acdd78105e787d28f9495f05a558529724d4e2f5596738950958446f82c4c34`，133103647 字节。公开下载、Ed25519 签名、Latest 及锁释放通过。无 Authenticode 身份证书。
+[下载 1.4.19](https://github.com/fang1776358081-arch/local-service-factory/releases/tag/v1.4.19)。本版打包已完成的维护端发布链接/验证工具修正；同步版本及公开克隆说明，没有修改客户端更新器、安装布局、生产提示词或运行时依赖。来源提交 5dc6e7b，安装器 SHA256 `5acdd78105e787d28f9495f05a558529724d4e2f5596738950958446f82c4c34`，133103647 字节。公开下载、Ed25519 签名、Latest 及锁释放通过。无 Authenticode 身份证书。
 
 规则 40 文件无变化，保留 `1794662868654979100`，未重复发布。新使用端匿名同步 updated→current 通过；本版独立初始化两测试通过。安装/更新路径文件与上次真实验收完全相同，本次复用链路证据，未再安装到正式电脑。旧仓保留 1.4.18 过渡入口，不能仅凭新版发布就删除旧仓。
 
 ## 统一仓库约定
 
-源码、软件 v 标签 Release、规则 rules 标签 Release 统一使用 eish1997/local-service-factory-dev，软件与规则独立更新，规则不抢 Latest。统一仓库已公开并完成迁移发布；旧仓链接保留为历史和过渡入口。开发不授权构建/发布。
+源码、软件 v 标签 Release、规则 rules 标签 Release 统一使用 fang1776358081-arch/local-service-factory，软件与规则独立更新，规则不抢 Latest。该仓库是独立公开项目，不是原仓 fork；旧仓链接只保留为历史证据。开发不授权构建/发布。
 
 以 [迁移与上线清单](../development/REPOSITORY_MIGRATION.md) 和 [执行台账](../development/UNIFIED_REPOSITORY_EXECUTION_PLAN.md) 为准。release-index.json 是发布维护的签名索引，普通源码同步不得覆盖/删除；规则发布后 fetch 并保留远端索引提交，禁止自动 stash/reset/强推。
 

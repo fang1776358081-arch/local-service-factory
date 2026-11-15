@@ -6,12 +6,12 @@ from tools import software_release as software,rule_updates as rules
 class TransitionTests(unittest.TestCase):
     def test_same_artifacts_both_repositories_and_recovery(self):
         root=software.paths.CODE_ROOT/'.runtime'/('transition-'+uuid4().hex);root.mkdir(parents=True)
-        new='local-service-factory-dev';old='local-service-factory-releases'
-        cfg={'owner':'eish1997','software_repo':new,'rules_repo':new,'app_version':'1.4.18','public_keys':{},'max_rules_bytes':1024}
+        new='new-repo';old='local-service-factory-dev'
+        cfg={'owner':'new-owner','software_repo':new,'rules_repo':new,'legacy_software_repository':{'owner':'eish1997','repo':old},'app_version':'1.4.18','public_keys':{},'max_rules_bytes':1024}
         files={}
         for name in ['LocalServiceFactory-1.4.18-setup.exe','LocalServiceFactory-1.4.18-setup.exe.blockmap','latest.yml']:
             (root/name).write_bytes(name.encode());files[name]=software.protocol.sha(name.encode())
-        (root/'build-provenance.json').write_text(json.dumps({'schema_version':1,'source_sha':'a'*40,'version':'1.4.18','repository':{'owner':'eish1997','repo':new},'files':files}),encoding='utf-8')
+        (root/'build-provenance.json').write_text(json.dumps({'schema_version':1,'source_sha':'a'*40,'version':'1.4.18','repository':{'owner':'new-owner','repo':new},'files':files}),encoding='utf-8')
         states={repo:{'release':None,'latest':None,'lock':None} for repo in (new,old)};writes=[]
         def github(method,url,body=None,raw=None):
             repo=old if old in url else new;state=states[repo]
@@ -36,7 +36,7 @@ class TransitionTests(unittest.TestCase):
                 return {}
             if method=='DELETE':state['lock']=None;return {}
             raise AssertionError(url)
-        rule_payload={'version':'201','url':f'https://github.com/eish1997/{new}/releases/download/rules-201/rules.zip','sha256':software.protocol.sha(b'rules')}
+        rule_payload={'version':'201','url':f'https://github.com/new-owner/{new}/releases/download/rules-201/rules.zip','sha256':software.protocol.sha(b'rules')}
         def download(url,*args,**kwargs):
             if url.endswith('/rules.zip'):return b'rules'
             repo=old if old in url else new
@@ -60,6 +60,11 @@ class TransitionTests(unittest.TestCase):
     def test_target_allowlist(self):
         cfg={'owner':'eish1997','software_repo':'local-service-factory-dev'}
         self.assertEqual(software.publication_repo(cfg,{'target':'legacy-software'}),'local-service-factory-releases')
+        moved={'owner':'new-owner','software_repo':'new-repo','legacy_software_repository':{'owner':'eish1997','repo':'local-service-factory-dev'}}
+        self.assertEqual(software.publication_target(moved,{'target':'legacy-software'}),('eish1997','local-service-factory-dev'))
         for request in ({'target':'arbitrary'},{'target':'https://example.com'}):
             with self.assertRaises(ValueError):software.publication_repo(cfg,request)
         with self.assertRaises(ValueError):software.publication_repo({**cfg,'owner':'other'},{'target':'legacy-software'})
+        for legacy in ({'owner':'new-owner','repo':'new-repo'},{'owner':'','repo':'old'}):
+            with self.assertRaises(ValueError):software.publication_target({**moved,'legacy_software_repository':legacy},{'target':'legacy-software'})
+        with self.assertRaises(ValueError):software.publication_target({**moved,'legacy_software_repository':'invalid'},{'target':'legacy-software'})

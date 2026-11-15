@@ -1,20 +1,25 @@
 # 在另一台电脑开发
 
-统一仓库为 `eish1997/local-service-factory-dev`，源码、软件和规则共仓但独立发布。仓库已公开，软件与规则迁移已完成，旧仓保留兼容过渡入口。提交源码不构建、不发布、不生图。流程与完整上线检查见 [迁移说明](REPOSITORY_MIGRATION.md)。
+统一仓库为 `fang1776358081-arch/local-service-factory`，源码、软件和规则共仓但独立发布。仓库是独立公开项目，不是原仓 fork；旧仓只作为历史证据保留。提交源码不构建、不发布、不生图。流程与完整上线检查见 [迁移说明](REPOSITORY_MIGRATION.md)。
+
+账号和仓库再次迁移的当前执行记录见 [GitHub 账号与仓库迁移](GITHUB_ACCOUNT_MIGRATION.md)；新电脑环境、私人资料边界和 Codex 接续见 [新电脑接续](NEW_PC_HANDOFF.md)。目标账号和仓库确认前，这两份文档中的占位符不得用于发布。
 
 ## 首次克隆
 
 安装 Git、Python 3.11 或更新版本、Node.js 22 或更新版本，公开克隆不需要 GitHub 登录；推送或发布时才需要对应写权限。
 
 ```powershell
-git clone https://github.com/eish1997/local-service-factory-dev.git
-cd local-service-factory-dev
+git clone https://github.com/fang1776358081-arch/local-service-factory.git
+cd local-service-factory
 py -3.11 -m venv .venv
-.venv/Scripts/python.exe -m pip install -r requirements.txt
+.venv/Scripts/python.exe -m pip install --require-hashes -r distribution/requirements-runtime.lock
 npm --prefix dashboard ci
+New-Item -ItemType Directory -Force output | Out-Null
 $env:ROAD_RESCUE_PYTHON = (Resolve-Path .venv/Scripts/python.exe).Path
 npm --prefix dashboard start
 ```
+
+`output/` 是被 `.gitignore` 排除的本地运行目录；干净克隆必须先创建，否则源码看板无法确认项目根。`requirements.txt` 只锁直接依赖，开发接续也优先使用上面的完整哈希锁，避免新电脑解析到不同传递依赖。
 
 Agent 打开整个仓库并先读 AGENTS.md。项目 skill 位于 `.agents/skills/`，不依赖原电脑的个人 skill 目录。Agent 与看板使用同一解释器和公共命令；命令示例中的 python 可换成本机 `.venv/Scripts/python.exe`。
 

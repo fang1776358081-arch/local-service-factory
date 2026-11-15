@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "owner": "eish1997",
-  "software_repo": "local-service-factory-dev",
-  "rules_repo": "local-service-factory-dev",
+  "owner": "fang1776358081-arch",
+  "software_repo": "local-service-factory",
+  "rules_repo": "local-service-factory",
   "app_version": "1.4.22",
   "rules_schema": 1,
   "public_keys": {

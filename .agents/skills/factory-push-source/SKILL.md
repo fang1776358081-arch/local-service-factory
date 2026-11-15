@@ -18,7 +18,7 @@ description: 整理本地生活服务图片工厂开发源码、Agent 指引和�
 
 ## 入口与范围
 
-- 默认开发仓库：`eish1997/local-service-factory-dev`；核实实际可见性和 remote 身份，公开仅按迁移授权执行。
+- 当前开发仓库：`fang1776358081-arch/local-service-factory`；它是独立公开项目，不是原仓 fork。核实实际可见性和 remote 身份，不能从本机 Git 作者猜目标仓库，公开仅按迁移授权执行。
 - 当前原生产目录：`<local-path>`；Git 开发副本：`<local-path>`。换电脑以实际 Git 根目录、remote 和源码位置为准。
 - 先读工作区 `AGENTS.md`、`agent_memory/current_state.md` 和 `development/README.md`。
 - 用户要求推送/同步开发源码时，完成必要的导出、审阅、提交、推送及验证，无须重复询问已授权动作。仅创建 skill、检查状态或开发功能不授权推送；用户说等另一任务完成，就等完成后再执行。
