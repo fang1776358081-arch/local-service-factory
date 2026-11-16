@@ -51,6 +51,19 @@ test('validates local-only triptych preparation fields', () => {
   assert.throws(() => service.validatePrepare({ phone: '13800138000', count: 1, storeName: '测试店' }), /确认/);
 });
 
+test('creates a unique frozen illustrative store name for every requested group', () => {
+  const value = service.validatePrepare({
+    phone: '13800138000', count: 60, randomStoreNames: true, styleStart: 0, confirm: true,
+  });
+  assert.equal(value.storeNames.length, 60);
+  assert.equal(new Set(value.storeNames).size, 60);
+  assert.equal(value.fictionalName, true);
+  for (const name of value.storeNames) {
+    assert.match(name, /^[\u3400-\u9fff]{2,24}$/);
+    assert.doesNotMatch(name, /\d{7}/);
+  }
+});
+
 test('lists and reads only bounded triptych task directories', () => {
   const home = fixture();
   const { taskId } = writeTask(home);

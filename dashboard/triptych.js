@@ -1,11 +1,14 @@
 const fs = require('fs');
 const path = require('path');
+const { randomInt } = require('crypto');
 const { spawn } = require('child_process');
 const { pathToFileURL } = require('url');
 const backend = require('./backend');
 
 const TASK_ID = /^\d{8}T\d{12}Z$/;
 const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp']);
+const STORE_NAME_PREFIXES = ['安途', '畅途', '顺途', '路安', '路畅', '远途', '驰援', '护航', '通途', '行安', '车安', '途顺', '路顺', '安行', '畅行', '佳途', '诚途', '联途', '宏途', '众途'];
+const STORE_NAME_SUFFIXES = ['道路救援', '汽车救援服务部', '车辆救援', '道路救援服务部', '汽车道路救援'];
 
 function inside(parent, file) {
   const relative = path.relative(path.resolve(parent), path.resolve(file));
@@ -122,9 +125,22 @@ function validatePrepare(request) {
   if (!/^1[3-9][0-9]{9}$/.test(phone)) throw Error('请输入正确的11位手机号');
   if (!Number.isInteger(count) || count < 1 || count > 100) throw Error('组数必须是1到100');
   if (!Number.isInteger(styleStart) || styleStart < 0 || styleStart > 1000000) throw Error('样式起点无效');
-  if (!/^[\u3400-\u9fffA-Za-z0-9·（）() -]{2,24}$/.test(storeName) || /\d{7}/.test(storeName)) throw Error('店名应为2到24个普通字符且不能包含电话号码');
   if (request.confirm !== true) throw Error('请先确认创建本地任务不会自动生图');
+  if (request.randomStoreNames === true) {
+    return { phone, storeNames: randomStoreNames(count), count, styleStart, fictionalName: true };
+  }
+  if (!/^[\u3400-\u9fffA-Za-z0-9·（）() -]{2,24}$/.test(storeName) || /\d{7}/.test(storeName)) throw Error('店名应为2到24个普通字符且不能包含电话号码');
   return { phone, storeName, count, styleStart, fictionalName: request.fictionalName === true };
+}
+
+function randomStoreNames(count) {
+  if (!Number.isInteger(count) || count < 1 || count > 100) throw Error('随机店名数量必须是1到100');
+  const names = STORE_NAME_PREFIXES.flatMap(prefix => STORE_NAME_SUFFIXES.map(suffix => prefix + suffix));
+  for (let index = names.length - 1; index > 0; index -= 1) {
+    const selected = randomInt(index + 1);
+    [names[index], names[selected]] = [names[selected], names[index]];
+  }
+  return names.slice(0, count);
 }
 
 function runCommand(root, args, { timeout = 60000 } = {}) {
@@ -169,8 +185,9 @@ function runCommand(root, args, { timeout = 60000 } = {}) {
 async function prepare(root, request) {
   const value = validatePrepare(request);
   const args = ['prepare', '--phone', value.phone, '--count', String(value.count),
-    '--style-start', String(value.styleStart), '--authorization', 'dashboard_explicit_confirmation',
-    '--store-name', value.storeName, '--confirm'];
+    '--style-start', String(value.styleStart), '--authorization', 'dashboard_explicit_confirmation'];
+  for (const name of value.storeNames || [value.storeName]) args.push('--store-name', name);
+  args.push('--confirm');
   if (value.fictionalName) args.push('--fictional-name');
   const result = await runCommand(root, args);
   const directory = path.resolve(String(result.json?.job_dir || ''));
@@ -229,4 +246,5 @@ module.exports = {
   request,
   taskDirectory,
   validatePrepare,
+  randomStoreNames,
 };

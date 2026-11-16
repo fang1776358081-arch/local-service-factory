@@ -50,26 +50,28 @@ async function run() {
   assert.equal(await js('document.getElementById("task-batch-list").hidden'), true);
 
   await js('document.getElementById("triptych-new").click()');
+  await js('document.getElementById("triptych-random-store-names").click()');
+  assert.equal(await js('document.getElementById("triptych-store-name").disabled'), true);
+  assert.equal(await js('document.getElementById("triptych-fictional-name").checked'), true);
   await js(`document.getElementById('triptych-phone').value='13800138000';
-    document.getElementById('triptych-count').value='1';
-    document.getElementById('triptych-store-name').value='测试字号道路救援';
-    document.getElementById('triptych-fictional-name').checked=true;
+    document.getElementById('triptych-count').value='2';
     document.getElementById('triptych-confirm').checked=true;
     document.getElementById('triptych-create-form').requestSubmit();`);
   await until('document.querySelectorAll(".triptych-task-row").length===1');
-  await until('document.querySelector("[data-action=claim]")!==null');
-  await js('document.querySelector("[data-action=claim]").click()');
-  await until('document.getElementById("triptych-prompt-dialog").open');
-  assert.equal(await js('document.getElementById("triptych-prompt-text").value.includes("连续摄影画面")'), true);
-  await js('document.getElementById("triptych-prompt-dialog").close()');
-  await until('document.querySelector("[data-action=import]")!==null');
-
   dialog.showOpenDialog = async (_, options) => ({
     canceled: false,
     filePaths: options.properties.includes('openFile') ? [source] : [exportsDirectory],
   });
-  await js('document.querySelector("[data-action=import]").click()');
-  await until('document.querySelector(".triptych-group-preview img")!==null');
+  for (const group of [1, 2]) {
+    await until(`document.querySelector('[data-group="${group}"] [data-action=claim]')!==null`);
+    await js(`document.querySelector('[data-group="${group}"] [data-action=claim]').click()`);
+    await until('document.getElementById("triptych-prompt-dialog").open');
+    assert.equal(await js('document.getElementById("triptych-prompt-text").value.includes("连续摄影画面")'), true);
+    await js('document.getElementById("triptych-prompt-dialog").close()');
+    await until(`document.querySelector('[data-group="${group}"] [data-action=import]')!==null`);
+    await js(`document.querySelector('[data-group="${group}"] [data-action=import]').click()`);
+    await until(`document.querySelector('[data-group="${group}"] .triptych-group-preview img')!==null`);
+  }
   assert.equal(await js('document.getElementById("triptych-package").disabled'), false);
   await js('document.getElementById("triptych-package").click()');
   await until('document.getElementById("triptych-status").textContent.includes("打包完成")');
@@ -78,12 +80,14 @@ async function run() {
   const taskDirectories = fs.readdirSync(path.join(fixture, 'output', 'road_rescue_pinned'));
   assert.equal(taskDirectories.length, 1);
   const task = JSON.parse(fs.readFileSync(path.join(fixture, 'output', 'road_rescue_pinned', taskDirectories[0], 'task.json')));
-  assert.equal(task.requests.length, 1);
-  assert.equal(task.groups[0].status, 'composed');
+  assert.equal(task.requests.length, 2);
+  assert.equal(task.identity_mode, 'per_group');
+  assert.equal(new Set(task.groups.map(group => group.store_identity.name)).size, 2);
+  assert.equal(task.groups.every(group => group.status === 'composed'), true);
   assert.equal(task.package_verified, true);
   fs.writeFileSync(path.join(root, '.runtime', 'triptych-ui.png'), (await win.webContents.capturePage()).toPNG());
   fs.writeFileSync(path.join(root, '.runtime', 'triptych-ui-result.json'), JSON.stringify({
-    ok: true, fixture, taskId: task.task_id, requests: 1, paidRequests: 0, packaged: true,
+    ok: true, fixture, taskId: task.task_id, requests: 2, paidRequests: 0, packaged: true, randomNames: true,
   }));
   app.exit(0);
 }

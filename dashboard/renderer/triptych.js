@@ -162,6 +162,7 @@
     el('triptych-count').value = '3';
     el('triptych-style-start').value = '0';
     el('triptych-create-error').textContent = '';
+    syncRandomStoreNames();
     el('triptych-create-dialog').showModal();
     el('triptych-phone').focus();
   };
@@ -177,6 +178,7 @@
         phone: el('triptych-phone').value,
         count: Number(el('triptych-count').value),
         storeName: el('triptych-store-name').value,
+        randomStoreNames: el('triptych-random-store-names').checked,
         styleStart: Number(el('triptych-style-start').value),
         fictionalName: el('triptych-fictional-name').checked,
         confirm: el('triptych-confirm').checked,
@@ -188,6 +190,17 @@
     } catch (error) { el('triptych-create-error').textContent = error.message; }
     finally { busy = false; submit.disabled = false; }
   };
+  function syncRandomStoreNames() {
+    const random = el('triptych-random-store-names').checked;
+    const store = el('triptych-store-name');
+    const fictional = el('triptych-fictional-name');
+    store.disabled = random;
+    store.required = !random;
+    store.placeholder = random ? '将为每组自动生成并冻结' : '同一任务内共用';
+    fictional.disabled = random;
+    if (random) fictional.checked = true;
+  }
+  el('triptych-random-store-names').onchange = syncRandomStoreNames;
   el('triptych-refresh').onclick = refresh;
   el('triptych-open').onclick = () => current && window.roadRescue.openTriptych({ taskId: current.taskId });
   el('triptych-package').onclick = async () => {
