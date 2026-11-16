@@ -1,0 +1,255 @@
+{
+  "version": "road_rescue_pinned_signage_v6",
+  "profiles": [
+    {
+      "id": "blue_flat_letters",
+      "label": "深蓝烤漆板配平面实体字",
+      "layout_family": "wide_primary_with_service_strip",
+      "material_family": "painted_metal_flat_letters",
+      "palette_family": "deep_blue_white_yellow",
+      "surface": "深蓝色烤漆金属底板，白色平面实体字，少量黄色业务强调字，板面维护正常",
+      "shape": "横向主牌覆盖两开间上方，右侧略收短以避开雨水管，不做通栏广告墙",
+      "layout": "店名在左侧和中部占主要宽度，道路救援作为较小从属业务，三项服务置于下沿信息带，电话在右下方连续横排",
+      "phone_position": "主牌右下方独立连续横排，不跨板缝",
+      "text_fit": "店名优先保持完整，服务词使用较小字并留间距，电话不得压缩成细长字形",
+      "installation_detail": "底板由正常可见的竖向板缝和少量同色固定帽安装，边缘与墙面留有真实阴影",
+      "sign_detail": "白字有适度实体厚度，板缝避开店名与电话号码，右端可见一处检修盖",
+      "facade_depth": "主牌安装在向外挑出的浅雨棚前沿，卷帘门比招牌后退约半米，左侧立柱略突出",
+      "service_separator": " · ",
+      "service_words": ["搭电救援", "补胎换胎", "拖车服务"],
+      "shot_id": "opposite_curb_two_bays",
+      "light_id": "dry_overcast",
+      "event_id": "tow_strap_return",
+      "typography_options": [
+        {
+          "id": "blue_square_sans",
+          "description": "店名使用中等偏粗的方正黑体实体字，笔画开口清楚；业务词使用同字族较细字重"
+        },
+        {
+          "id": "blue_rounded_sans",
+          "description": "店名使用略带圆角的粗黑体平面字，字面宽松；服务词使用紧凑但清晰的无衬线字"
+        }
+      ]
+    },
+    {
+      "id": "orange_acrylic_letters",
+      "label": "橙色铝塑板配亚克力立体字",
+      "layout_family": "offset_name_with_phone_band",
+      "material_family": "orange_composite_acrylic",
+      "palette_family": "muted_orange_charcoal_white",
+      "surface": "低饱和橙色铝塑板，深灰亚克力店名字和白色业务字，只有一处米白强调块",
+      "shape": "单开间门头采用左高右低的两段矩形板，段落属于同一实体结构，不做拼贴海报",
+      "layout": "店名位于左侧较高主区，道路救援和三项服务在右侧分行，电话沿左下方留足宽度横排",
+      "phone_position": "主牌左下方独立信息行，与右侧服务区错开",
+      "text_fit": "先缩小服务字而不是挤压店名和电话，右侧业务区最多三行并保持自然行距",
+      "installation_detail": "亚克力字使用少量金属脚固定，板边包边完整，底部可见正常滴水边",
+      "sign_detail": "实体字有一致侧边厚度和自然投影，左下电话号码与板边保留明显安全距离",
+      "facade_depth": "窄门面招牌固定在卷帘盒外侧，右侧小雨棚向街面挑出，门洞在牌下内退",
+      "service_separator": " / ",
+      "service_words": ["送油救援", "车辆救援", "地库救援"],
+      "shot_id": "county_single_bay",
+      "light_id": "clear_morning",
+      "event_id": "tire_pressure_check",
+      "typography_options": [
+        {
+          "id": "orange_condensed_sans",
+          "description": "店名使用略窄但不压扁的粗无衬线亚克力字，数字使用等宽清晰字形"
+        },
+        {
+          "id": "orange_humanist_sans",
+          "description": "店名使用笔画转角自然的人文无衬线立体字，业务行使用较小直立黑体"
+        }
+      ]
+    },
+    {
+      "id": "green_shallow_lightbox",
+      "label": "墨绿浅灯箱配乳白透光字",
+      "layout_family": "centered_name_with_side_phone",
+      "material_family": "green_shallow_lightbox",
+      "palette_family": "dark_green_cream_warm_white",
+      "surface": "墨绿色浅灯箱面板，乳白色透光店名字，暖白业务小字，不使用霓虹或彩虹描边",
+      "shape": "地库坡道旁的窄长灯箱顺墙安装，左侧因转角略缩进，整体厚度真实可见",
+      "layout": "店名居中但不做绝对对称，道路救援在店名下方较小显示，三项服务在左下，电话在右侧连续横排",
+      "phone_position": "灯箱右侧中下部横排，远离墙体转角和接缝",
+      "text_fit": "服务词用分隔点而非多个按钮，店名和电话保持完整，空间不足时减少装饰留白",
+      "installation_detail": "灯箱侧边框有正常厚度并用墙面支架固定，靠坡道一端可见检修螺钉",
+      "sign_detail": "面板亮度均匀但不过曝，字面边缘清楚，侧框在斜视角下形成真实厚度",
+      "facade_depth": "服务点墙面沿坡道转折，灯箱贴近外墙而卷帘门在转角后方，坡道扶墙形成前后遮挡",
+      "service_separator": " · ",
+      "service_words": ["地库救援", "搭电救援", "困境救援"],
+      "shot_id": "garage_exit_edge",
+      "light_id": "ordinary_afternoon",
+      "event_id": "jump_starter_pack",
+      "typography_options": [
+        {
+          "id": "green_clean_gothic",
+          "description": "店名使用结构规整的中粗黑体透光字，数字笔画宽度一致且开口清楚"
+        },
+        {
+          "id": "green_soft_square",
+          "description": "店名使用轻微圆角的方体透光字，业务词采用较细且疏朗的无衬线字"
+        }
+      ]
+    },
+    {
+      "id": "red_three_line_board",
+      "label": "暗红金属板三行经营信息",
+      "layout_family": "three_line_hierarchy",
+      "material_family": "burgundy_metal_channel_letters",
+      "palette_family": "burgundy_cream_pale_gold",
+      "surface": "暗红色金属板，米白店名字和淡金色小号业务字，颜色克制且维护正常",
+      "shape": "旧街区两开间上方使用高度适中的三行板，左端随建筑梁位短一些，不追求绝对对称",
+      "layout": "第一行完整店名，第二行道路救援及三项服务，第三行电话偏左横排并与右侧留白平衡",
+      "phone_position": "第三行偏左连续横排，不与第一行店名等大",
+      "text_fit": "三行有明确字号层级，服务词不拆成四个等大标题，电话保持11位连续可读",
+      "installation_detail": "板面通过上下金属收边固定，左侧梁柱处有正常裁口，字脚投影方向一致",
+      "sign_detail": "收边条和少量固定点清楚可见，淡金服务字不使用发光描边，电话号码周围留出板面",
+      "facade_depth": "招牌前沿与二层墙面齐但门洞后退，中央梁柱略向街面突出，两侧卷帘门深度不同",
+      "service_separator": "  ",
+      "service_words": ["高速救援", "送油救援", "补胎换胎"],
+      "shot_id": "street_tree_partial",
+      "light_id": "cloud_break",
+      "event_id": "wheel_bolt_check",
+      "typography_options": [
+        {
+          "id": "red_heavy_song_sans",
+          "description": "店名使用带轻微宋体骨架的粗实体字，但不做书法牌匾；业务行使用标准黑体"
+        },
+        {
+          "id": "red_wide_gothic",
+          "description": "店名使用横向略宽的厚重黑体字，电话使用清楚的直立无衬线数字"
+        }
+      ]
+    },
+    {
+      "id": "gray_blue_segmented_board",
+      "label": "灰蓝分段板配白色立体字",
+      "layout_family": "segmented_two_bay_information",
+      "material_family": "gray_blue_segmented_panels",
+      "palette_family": "gray_blue_white_orange",
+      "surface": "灰蓝色分段金属板，白色立体店名字，少量橙色电话强调，分段线属于真实板缝",
+      "shape": "物流园两开间门头按建筑柱位分成三个宽度不同的实体板段，整体仍是同一门店",
+      "layout": "店名跨中间主段但不跨深缝，道路救援位于左段，三项服务位于中下部，电话完整放在右段",
+      "phone_position": "右侧独立板段内连续横排，四周不贴边",
+      "text_fit": "按板段分配信息而不是硬挤在一条线上，服务词可以缩小，电话号码不得跨接缝",
+      "installation_detail": "各板段通过雨棚骨架独立固定，板缝、包边和下沿滴水结构与钢棚一致",
+      "sign_detail": "板缝宽度不均但避开关键文字，立体白字有相同厚度，右段电话仅用一处橙色",
+      "facade_depth": "低矮雨棚向场地挑出，招牌板固定在雨棚前梁，两个门洞分别向内退且右侧墙面更深",
+      "service_separator": " | ",
+      "service_words": ["拖车服务", "困境救援", "车辆救援"],
+      "shot_id": "logistics_plain_shed",
+      "light_id": "late_daylight",
+      "event_id": "recovery_truck_return",
+      "typography_options": [
+        {
+          "id": "gray_blue_industrial_sans",
+          "description": "店名使用实用型工业无衬线立体字，笔画方直但不做模板喷字效果"
+        },
+        {
+          "id": "gray_blue_compact_gothic",
+          "description": "店名使用紧凑粗黑体实体字，业务小字保持正常字宽和清晰间距"
+        }
+      ]
+    },
+    {
+      "id": "cream_corner_sign",
+      "label": "米白转角主副招牌",
+      "layout_family": "corner_primary_secondary",
+      "material_family": "cream_corner_wrapped_panels",
+      "palette_family": "cream_navy_brick_red",
+      "surface": "米白色包角金属主牌，深蓝店名字，砖红色小号电话强调，侧牌只保留从属业务",
+      "shape": "招牌沿真实转角形成正面主牌和较窄侧牌，两面有自然夹角，不展开成平面全景广告",
+      "layout": "正面放完整店名、三项服务和电话，侧面只放较小道路救援字样，不在两面重复电话",
+      "phone_position": "正面主牌下方偏右连续横排，完全留在转角线以内",
+      "text_fit": "侧牌信息主动精简，正面店名和电话优先，服务词用小号分隔排列且不跨转角",
+      "installation_detail": "转角包边有真实折线和端盖，正面与侧面字的透视、厚度和光照保持一致",
+      "sign_detail": "米白板保留轻微接缝，深蓝字有窄侧边，砖红电话只出现一次且不做底色条",
+      "facade_depth": "转角底商两面墙自然折转，正面门洞后退，侧面雨棚略向外挑，转角柱形成明确厚度",
+      "service_separator": " · ",
+      "service_words": ["城市路救援", "搭电救援", "送油救援"],
+      "shot_id": "residential_corner",
+      "light_id": "shop_light_dusk",
+      "event_id": "toolbox_return",
+      "typography_options": [
+        {
+          "id": "cream_elegant_sans",
+          "description": "店名使用克制的中粗无衬线立体字，字面宽松但不过度商业精修"
+        },
+        {
+          "id": "cream_square_gothic",
+          "description": "店名使用端正方黑体实体字，侧牌业务字采用同字族较细字重"
+        }
+      ]
+    }
+  ],
+  "camera_presets": [
+    {
+      "id": "front_eye_level",
+      "description": "从街道对面接近平视拍摄，画面略偏离门店中轴，保留两侧少量建筑关系"
+    },
+    {
+      "id": "left_oblique",
+      "description": "从门店左前方约二十五度斜拍，招牌仍完整可读，右侧门洞体现自然进深"
+    },
+    {
+      "id": "right_oblique",
+      "description": "从门店右前方约三十度斜拍，左侧场地和邻铺形成街道纵深"
+    },
+    {
+      "id": "slightly_low",
+      "description": "使用普通手机略低于视线的机位轻微仰拍，不夸张建筑高度或使用超广角"
+    },
+    {
+      "id": "step_slightly_high",
+      "description": "站在路缘或一级台阶上稍高拍摄，仍保持普通行人视角和真实车辆比例"
+    },
+    {
+      "id": "across_street_longer",
+      "description": "从街对面稍远处拍摄，带入路缘和一小段街景，门店不占满整个画面"
+    },
+    {
+      "id": "near_entrance",
+      "description": "从门口外侧稍近位置记录，保留主招牌和完整立面，不用贴脸式广角畸变"
+    },
+    {
+      "id": "work_area_side",
+      "description": "从作业区侧边向门店拍摄，工具或车辆边缘可作少量前景但不挡住招牌电话"
+    },
+    {
+      "id": "passing_snapshot",
+      "description": "以路过时的轻微偏心构图随手记录，水平线和透视自然，不做精确对称商业摄影"
+    }
+  ],
+  "event_presets": [
+    {
+      "id": "tow_strap_return",
+      "description": "一名师傅在门口把刚使用完的拖车带收回工具箱，清障车只在画面边缘露出一部分",
+      "physical_constraints": "拖车带自然连接到师傅双手附近并落入工具箱，不缠绕人体；车辆停放方向与门口通道一致"
+    },
+    {
+      "id": "tire_pressure_check",
+      "description": "一名师傅蹲在普通家用车侧面检查轮胎气压，另一只手扶住压力表软管",
+      "physical_constraints": "压力表软管只连接一个轮胎气嘴，轮胎保持安装状态，人物手脚和工具数量正常"
+    },
+    {
+      "id": "jump_starter_pack",
+      "description": "车辆完成搭电后，一名师傅在车旁收回便携启动电源和两根夹线",
+      "physical_constraints": "前机盖可以打开但不遮住招牌，正负夹线各一根并归入同一启动电源，不生成多余电池或悬空电线"
+    },
+    {
+      "id": "wheel_bolt_check",
+      "description": "一名师傅在门口检查车轮螺栓紧固情况，工具箱放在身体侧后方",
+      "physical_constraints": "扳手只作用于一个真实轮毂螺栓位置，车轮结构完整，人物双手姿态与发力方向一致"
+    },
+    {
+      "id": "recovery_truck_return",
+      "description": "一辆空载清障车刚回到场地，一名师傅从驾驶室侧边走向门店并查看随车工具舱",
+      "physical_constraints": "清障平台保持空载和收拢状态，车辆不堵住全部门洞，人物与车身比例符合普通工作场地"
+    },
+    {
+      "id": "toolbox_return",
+      "description": "一名师傅提着普通工具箱从作业区返回店内，门口保留正常通行空间",
+      "physical_constraints": "工具箱由一只手自然提握且不悬浮，人物步态和投影一致，不额外安排无关维修动作"
+    }
+  ]
+}
