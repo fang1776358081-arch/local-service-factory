@@ -1,0 +1,50 @@
+#triptych-task-list { padding:0 8px 18px; display:flex; flex-direction:column; gap:4px; }
+.triptych-task-row { width:100%; padding:14px 12px; border:0; border-radius:5px; background:none; color:var(--muted); text-align:left; cursor:pointer; }
+.triptych-task-row:hover { background:#202326; }
+.triptych-task-row.selected { background:#252a2d; color:var(--ink); }
+.triptych-task-row strong,.triptych-task-row small,.triptych-task-row span { display:block; }
+.triptych-task-row strong { color:var(--ink); font-size:14px; font-weight:500; }
+.triptych-task-row span { margin:6px 0 3px; font-size:12px; }
+.triptych-task-row small { color:var(--muted); font-size:11px; }
+#triptych-panel:not([hidden]) { display:flex; flex-direction:column; min-height:0; flex:1; overflow:auto; padding:0 22px 24px; }
+.triptych-toolbar { min-height:54px; position:sticky; top:0; z-index:3; display:flex; align-items:center; gap:10px; background:var(--surface); }
+.triptych-toolbar>div { display:flex; flex-direction:column; gap:3px; margin-right:auto; }
+.triptych-toolbar strong { font-size:14px; font-weight:600; }
+.triptych-toolbar small { color:var(--muted); font-size:11px; }
+.triptych-toolbar button,#triptych-panel button,#triptych-create-dialog button,#triptych-prompt-dialog button { border:0; border-radius:5px; background:#252a2d; color:#cbd2d5; padding:8px 11px; cursor:pointer; }
+.triptych-toolbar button:hover,#triptych-panel button:hover,#triptych-create-dialog button:hover,#triptych-prompt-dialog button:hover { background:#30363a; color:var(--ink); }
+.triptych-toolbar button:disabled,#triptych-panel button:disabled { opacity:.35; cursor:default; }
+#triptych-status { min-height:20px; margin:4px 0 12px; color:var(--muted); font-size:12px; overflow-wrap:anywhere; }
+#triptych-status.error,#triptych-create-error { color:var(--danger); }
+#triptych-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:12px; }
+.triptych-metric { padding:12px 14px; border-radius:6px; background:var(--raised); }
+.triptych-metric small,.triptych-metric strong { display:block; }
+.triptych-metric small { color:var(--muted); font-size:11px; }
+.triptych-metric strong { margin-top:5px; font-size:15px; font-weight:500; overflow-wrap:anywhere; }
+.triptych-group { display:grid; grid-template-columns:minmax(120px,170px) minmax(0,1fr) auto; gap:14px; align-items:center; padding:16px 0; border-bottom:1px solid var(--line); }
+.triptych-group-info strong,.triptych-group-info small { display:block; }
+.triptych-group-info strong { font-size:14px; font-weight:500; }
+.triptych-group-info small { margin-top:6px; color:var(--muted); font-size:11px; }
+.triptych-group-preview { min-height:86px; display:flex; align-items:center; color:var(--muted); font-size:12px; }
+.triptych-group-preview img { width:194px; height:86px; object-fit:cover; border-radius:5px; background:#1b1e20; }
+.triptych-group-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+.triptych-empty { padding:40px 10px; color:var(--muted); text-align:center; }
+#triptych-create-dialog,#triptych-prompt-dialog { width:440px; max-width:90vw; max-height:86vh; overflow:auto; padding:24px; color:var(--ink); background:var(--surface); border:1px solid #465057; border-radius:10px; box-shadow:0 20px 80px #0008; }
+#triptych-prompt-dialog { width:720px; }
+#triptych-create-dialog::backdrop,#triptych-prompt-dialog::backdrop { background:#000a; }
+#triptych-create-dialog header { display:flex; align-items:center; justify-content:space-between; }
+#triptych-create-dialog h2,#triptych-prompt-dialog h2 { margin:0 0 14px; font-size:18px; }
+#triptych-create-dialog label { display:flex; flex-direction:column; gap:7px; margin:15px 0; font-size:13px; }
+#triptych-create-dialog label.triptych-check { flex-direction:row; align-items:center; }
+#triptych-create-dialog input,#triptych-prompt-dialog textarea { box-sizing:border-box; width:100%; padding:10px; border:0; border-radius:5px; background:var(--raised); color:var(--ink); font:inherit; }
+#triptych-create-dialog .triptych-check input { width:auto; }
+#triptych-create-dialog p,#triptych-prompt-dialog p { color:var(--muted); font-size:12px; line-height:1.7; }
+#triptych-create-dialog footer,#triptych-prompt-dialog form { display:flex; justify-content:flex-end; gap:10px; }
+#triptych-prompt-dialog textarea { resize:vertical; line-height:1.65; font-size:12px; }
+body.triptych-mode #triptych-page { color:var(--ink); box-shadow:inset 0 -2px var(--accent); }
+@media(max-width:1100px) {
+  #triptych-panel:not([hidden]) { padding-left:16px; padding-right:16px; }
+  #triptych-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .triptych-group { grid-template-columns:1fr auto; }
+  .triptych-group-preview { grid-column:1/-1; grid-row:2; }
+}

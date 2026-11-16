@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import shutil
 import zipfile
@@ -13,6 +14,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from tools.contact_numbers import normalize_contact_number
 
 ROOT = Path(__file__).resolve().parents[1]
+DATA_ROOT = Path(os.environ.get('FACTORY_DATA_HOME') or ROOT).resolve()
 SIGNBOARD_PROFILE_PATH = ROOT / 'projects/road_rescue/pinned_signboard_profiles.json'
 SCENES = [
     'Two ordinary repair bays under a worn blue and red signboard, yellow flatbed tow truck partially visible at far left, white compact car at right with a mechanic changing its front wheel. Uneven concrete forecourt, bright overcast daylight, almost frontal casual street photo.',
@@ -165,7 +167,7 @@ def prepare(args):
     if not all(g['generation_ready'] for g in groups):
         raise ValueError('Store identity is pending: use the user supplied name or an explicitly authorized illustrative name')
     task_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
-    folder = ROOT / 'output' / 'road_rescue_pinned' / task_id
+    folder = DATA_ROOT / 'output' / 'road_rescue_pinned' / task_id
     folder.mkdir(parents=True, exist_ok=False)
     task = dict(version=1, task_id=task_id, phone=phone, category='road_rescue', count=args.count,
                 store_identity=groups[0]['store_identity'] if len(set(names)) == 1 else None,

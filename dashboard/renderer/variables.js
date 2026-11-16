@@ -61,13 +61,13 @@
   }
   async function projects(){if(!projectsPromise)projectsPromise=call('projects','road_rescue').then(rows=>{for(const p of rows){const option=node('option',p.name);option.value=p.id;el('variable-project').append(option);}}).catch(e=>{projectsPromise=null;throw e;});return projectsPromise;}
   function mode(value){
-    const page=typeof value==='boolean'?(value?'prompts':'batch'):value;window.dashboardPage=page;const variables=page==='prompts',postprocess=page==='postprocess';
+    const page=typeof value==='boolean'?(value?'prompts':'batch'):value;window.dashboardPage=page;const variables=page==='prompts',postprocess=page==='postprocess',triptych=page==='triptych';
     document.body.classList.toggle('variables-mode',variables);document.body.classList.toggle('postprocess-mode',postprocess);
-    el('gallery-panel').hidden=false;el('variables-panel').hidden=!variables;el('variable-types').hidden=!variables;
-    el('task-batch-list').hidden=variables;el('task-new').hidden=page!=='batch';
+    el('gallery-panel').hidden=false;el('variables-panel').hidden=!variables;el('variable-types').hidden=!variables;el('triptych-panel').hidden=!triptych;
+    el('task-batch-list').hidden=variables||triptych;el('triptych-task-list').hidden=!triptych;el('task-new').hidden=page!=='batch';el('triptych-new').hidden=!triptych;
     document.querySelector('.content-toolbar').hidden=page!=='batch';document.querySelector('.content-scroll').hidden=page!=='batch';
-    el('gallery-page').classList.toggle('selected',page==='batch');el('variables-page').classList.toggle('selected',variables);el('postprocess-page').classList.toggle('selected',postprocess);
-    window.dashboardPostprocessMode?.(page);
+    el('gallery-page').classList.toggle('selected',page==='batch');el('variables-page').classList.toggle('selected',variables);el('postprocess-page').classList.toggle('selected',postprocess);el('triptych-page').classList.toggle('selected',triptych);
+    window.dashboardPostprocessMode?.(page);window.dashboardTriptychMode?.(triptych);
   }
   window.dashboardSetPage=mode;
   el('gallery-page').onclick=()=>{remember();mode(false);};

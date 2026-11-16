@@ -127,6 +127,7 @@ class RuleUpdates(unittest.TestCase):
         engine=stage_engine(self.home/'staged-engine')
         user=self.home/'fresh-user';user.mkdir()
         environment={**os.environ,'FACTORY_DATA_HOME':str(user),'PYTHONPATH':''}
+        self.assertTrue((engine/'projects/road_rescue/pinned_signboard_profiles.json').is_file())
         result=subprocess.run([sys.executable,str(engine/'factory.py'),'tasks','projects'],cwd=user,input='{}',text=True,encoding='utf-8',capture_output=True,env=environment)
         self.assertEqual(result.returncode,0,result.stderr[-1200:]);self.assertEqual(len(json.loads(result.stdout)['data']),len(rules.PROJECTS))
         request={'category':'road_rescue','count':1,'phone':'13800138000','seed':1401}

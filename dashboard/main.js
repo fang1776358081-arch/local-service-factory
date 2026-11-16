@@ -5,6 +5,7 @@ const applicationIcon = path.join(__dirname,'branding','logo.png');
 const { inspectJob, summarizeJob } = require('./monitor');
 const { runVariables } = require('./variables');
 const { runTasks, readLibraryJobs, hasActiveNativeTasks } = require('./tasks');
+const triptych = require('./triptych');
 const {
   buildCompletionNotification,
   markNotificationSent,
@@ -358,6 +359,36 @@ app.whenReady().then(() => {
     return runTasks(projectRoot,'package',{...request,destination:result.filePaths[0]});
   });
   ipcMain.handle('variables:request', (_, request) => runVariables(projectRoot, request));
+  ipcMain.handle('triptych:request', (_, operation, request = {}) => {
+    if (!projectRoot) throw Error('尚未连接项目目录');
+    if (request?.source || request?.destination || request?.directory) throw Error('三连屏文件路径必须通过系统选择窗口');
+    return triptych.request(projectRoot, operation, request);
+  });
+  ipcMain.handle('triptych:import', async (event, request) => {
+    if (!projectRoot) throw Error('尚未连接项目目录');
+    const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
+      title: `选择第 ${Number(request?.group) || ''} 组横幅母图`,
+      properties: ['openFile'],
+      filters: [{ name: '图片', extensions: ['png', 'jpg', 'jpeg', 'webp'] }],
+    });
+    if (result.canceled) return null;
+    return triptych.compose(projectRoot, { taskId: request.taskId, group: request.group, source: result.filePaths[0] });
+  });
+  ipcMain.handle('triptych:package', async (event, request) => {
+    if (!projectRoot) throw Error('尚未连接项目目录');
+    const result = await dialog.showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
+      title: '选择三连屏压缩包保存位置', properties: ['openDirectory', 'createDirectory'],
+    });
+    if (result.canceled) return null;
+    return triptych.packageTask(projectRoot, { taskId: request.taskId, destination: result.filePaths[0] });
+  });
+  ipcMain.handle('triptych:open', async (_, request) => {
+    if (!projectRoot) throw Error('尚未连接项目目录');
+    const directory = triptych.taskDirectory(projectRoot, request?.taskId);
+    const error = await shell.openPath(directory);
+    if (error) throw Error(error);
+    return { directory };
+  });
   ipcMain.handle('project:choose', async () => {
     if(app.isPackaged)return readDashboardAndNotify();
     const result = await dialog.showOpenDialog({ properties: ['openDirectory'], title: '选择 road_rescue_image_factory 文件夹' });

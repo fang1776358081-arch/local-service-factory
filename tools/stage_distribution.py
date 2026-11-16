@@ -33,6 +33,13 @@ def stage_engine(target):
         relative=file.relative_to(ROOT);out=target/relative;out.parent.mkdir(parents=True,exist_ok=True);out.write_text(source_text(file),encoding='utf-8')
     for relative,data in rule_updates.export_documents().items():
         out=target/relative;out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes(data)
+    # Pinned triptych profiles are application workflow data, not an
+    # independently published rule channel. Keep them in every engine stage.
+    relative=Path('projects/road_rescue/pinned_signboard_profiles.json')
+    value=json.loads((ROOT/relative).read_text(encoding='utf-8'))
+    if rule_updates.scrub(value)!=value:raise ValueError('三连屏配置包含不允许进入安装包的本地信息')
+    out=target/relative;out.parent.mkdir(parents=True,exist_ok=True)
+    out.write_text(json.dumps(value,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
     baseline=target/'distribution/baseline-rules.json';baseline.parent.mkdir(exist_ok=True)
     baseline.write_text(json.dumps({'version':'1','files':sorted(rule_updates.allowed_files())}),encoding='utf-8')
     for name in ('update-config.json','rules-fields.json'):

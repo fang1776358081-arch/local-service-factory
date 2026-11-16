@@ -82,6 +82,22 @@ class PinnedTriptychTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             pinned.store_identity(None, True)
 
+    def test_prepare_uses_data_root_instead_of_engine_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            original = pinned.DATA_ROOT
+            pinned.DATA_ROOT = Path(directory)
+            try:
+                args = Namespace(phone='13800138000', count=1, style_start=0, confirm=True,
+                                 authorization='isolated dashboard test',
+                                 store_name='测试字号道路救援', fictional_name=True)
+                with contextlib.redirect_stdout(io.StringIO()):
+                    pinned.prepare(args)
+                tasks = list((Path(directory) / 'output' / 'road_rescue_pinned').glob('*/task.json'))
+                self.assertEqual(len(tasks), 1)
+                self.assertEqual(json.loads(tasks[0].read_text(encoding='utf-8'))['count'], 1)
+            finally:
+                pinned.DATA_ROOT = original
+
     def test_named_plan_preserves_identity_without_spending_requests(self):
         with tempfile.TemporaryDirectory() as directory:
             args = Namespace(phone='13277979906', count=6, style_start=0,

@@ -22,6 +22,7 @@
       "main.js",
       "variables.js",
       "tasks.js",
+      "triptych.js",
       "monitor.js",
       "notifications.js",
       "session.js",
