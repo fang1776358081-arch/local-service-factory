@@ -45,12 +45,17 @@
     if (group.status === 'composed') return group.visualReview === 'needs_fix' ? '已切图 · 需检查' : '已切图 · 待验收';
     if (group.unresolved) return `已领取第 ${group.attempt} 次 · 待导入母图`;
     if (group.requests >= 2) return '本组请求次数已用完';
+    if (current?.autoRunning) return '自动生成队列中';
     return '待领取提示词';
   }
 
   function renderDetail() {
     el('triptych-open').disabled = !current;
     el('triptych-package').disabled = !current?.allComposed || current?.packageVerified;
+    const autoButton = el('triptych-auto');
+    autoButton.disabled = !current || (!current.autoRunning && !current.canAutoStart);
+    autoButton.textContent = current?.autoRunning ? '暂停自动生成'
+      : current?.autoStatus === 'paused' || current?.autoStatus === 'completed_with_errors' ? '继续自动生成' : '开始生成全部';
     if (!current) {
       el('triptych-summary').replaceChildren();
       el('triptych-groups').innerHTML = '<div class="triptych-empty">点击左侧＋创建任务</div>';
@@ -59,6 +64,7 @@
     el('triptych-summary').innerHTML = [
       ['手机号', current.phone], ['店名', current.storeName],
       ['进度', `${current.composed}/${current.count} 组`], ['请求', `${current.requestsUsed}/${current.maxRequests}`],
+      ['自动生成', current.autoRunning ? '进行中' : current.autoStatus === 'completed' ? '已完成' : current.autoStatus === 'paused' ? '已暂停' : current.autoStatus === 'completed_with_errors' ? '有失败，可继续' : '未开始'],
     ].map(([name, value]) => `<div class="triptych-metric"><small>${escape(name)}</small><strong>${escape(value)}</strong></div>`).join('');
     el('triptych-groups').innerHTML = current.groups.map(group => `<section class="triptych-group" data-group="${group.index}">
       <div class="triptych-group-info"><strong>第 ${group.index} 组</strong><small>${escape(group.storeName || current.storeName)}</small><small>${escape(groupLabel(group))}</small></div>
@@ -202,6 +208,21 @@
   }
   el('triptych-random-store-names').onchange = syncRandomStoreNames;
   el('triptych-refresh').onclick = refresh;
+  el('triptych-auto').onclick = async () => {
+    if (busy || !current) return;
+    const pausing = current.autoRunning;
+    if (!pausing && !window.confirm(`将使用现有 API 密钥自动生成剩余 ${current.count - current.composed} 组，任务总请求上限 ${current.maxRequests} 次。是否开始？`)) return;
+    busy = true;
+    status(pausing ? '正在请求暂停；已发出的请求会先收尾…' : '正在启动自动生成并检查可用密钥…');
+    try {
+      current = await window.roadRescue.triptych(pausing ? 'pause-auto' : 'start-auto', {
+        taskId: current.taskId, confirmPaid: !pausing,
+      });
+      renderDetail(); renderList();
+      status(pausing ? '已请求暂停，请等待当前请求收尾。' : '自动生成已启动；先单路验证，成功后逐步增加并发。');
+    } catch (error) { status(error.message, true); }
+    finally { busy = false; }
+  };
   el('triptych-open').onclick = () => current && window.roadRescue.openTriptych({ taskId: current.taskId });
   el('triptych-package').onclick = async () => {
     if (busy || !current) return;

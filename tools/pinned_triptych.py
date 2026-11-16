@@ -412,6 +412,21 @@ def package(args):
     return 0
 
 
+def auto_start(args):
+    from tools.pinned_triptych_auto import start
+    return start(args)
+
+
+def auto_pause(args):
+    from tools.pinned_triptych_auto import pause
+    return pause(args)
+
+
+def auto_worker(args):
+    from tools.pinned_triptych_auto import worker
+    return worker(args)
+
+
 def add_arguments(parser):
     sub = parser.add_subparsers(dest='pinned_action', required=True)
     p = sub.add_parser('plan')
@@ -448,3 +463,15 @@ def add_arguments(parser):
         if name == 'package':
             p.add_argument('--destination', default='E:/Downloads')
         p.set_defaults(handler=handler)
+    p = sub.add_parser('start-auto')
+    p.add_argument('--job-dir', required=True)
+    p.add_argument('--authorization', required=True)
+    p.add_argument('--max-workers', type=int, default=50)
+    p.add_argument('--confirm-paid', action='store_true')
+    p.set_defaults(handler=auto_start)
+    p = sub.add_parser('pause-auto')
+    p.add_argument('--job-dir', required=True)
+    p.set_defaults(handler=auto_pause)
+    p = sub.add_parser('auto-worker')
+    p.add_argument('--job-dir', required=True)
+    p.set_defaults(handler=auto_worker)

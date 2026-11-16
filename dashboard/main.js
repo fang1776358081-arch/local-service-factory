@@ -302,7 +302,7 @@ app.whenReady().then(() => {
   if (process.platform === 'win32') app.setAppUserModelId('local.roadrescue.dashboard');
   projectRoot = app.isPackaged ? require('./installed-runtime').initialize(app) : findProjectRoot();
   if(projectRoot){
-    updateService=require('./update-service').createService({app,root:projectRoot,hasActiveTasks:()=>hasActiveNativeTasks(projectRoot)||[...readDashboardJobs(),...readLibraryJobs(projectRoot)].some(j=>{const m=inspectJob(j,projectRoot);return m.claimedActive&&m.processAlive!==false;})});
+    updateService=require('./update-service').createService({app,root:projectRoot,hasActiveTasks:()=>hasActiveNativeTasks(projectRoot)||triptych.hasActiveWorkers(projectRoot)||[...readDashboardJobs(),...readLibraryJobs(projectRoot)].some(j=>{const m=inspectJob(j,projectRoot);return m.claimedActive&&m.processAlive!==false;})});
     if(!testShellMode)updateService.start();
   }
   ipcMain.handle('updates:request',(_,operation)=>{
@@ -394,7 +394,7 @@ app.whenReady().then(() => {
     const result = await dialog.showOpenDialog({ properties: ['openDirectory'], title: '选择 road_rescue_image_factory 文件夹' });
     if (!result.canceled && isProjectRoot(result.filePaths[0])) {
       projectRoot = result.filePaths[0];updateService?.stop();
-      updateService=require('./update-service').createService({app,root:projectRoot,hasActiveTasks:()=>hasActiveNativeTasks(projectRoot)||[...readDashboardJobs(),...readLibraryJobs(projectRoot)].some(j=>{const m=inspectJob(j,projectRoot);return m.claimedActive&&m.processAlive!==false;})});
+      updateService=require('./update-service').createService({app,root:projectRoot,hasActiveTasks:()=>hasActiveNativeTasks(projectRoot)||triptych.hasActiveWorkers(projectRoot)||[...readDashboardJobs(),...readLibraryJobs(projectRoot)].some(j=>{const m=inspectJob(j,projectRoot);return m.claimedActive&&m.processAlive!==false;})});
       if(!testShellMode)updateService.start();
     }
     return readDashboardAndNotify();

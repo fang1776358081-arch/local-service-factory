@@ -58,6 +58,7 @@ async function run() {
     document.getElementById('triptych-confirm').checked=true;
     document.getElementById('triptych-create-form').requestSubmit();`);
   await until('document.querySelectorAll(".triptych-task-row").length===1');
+  assert.equal(await js('document.getElementById("triptych-auto").disabled'), false);
   dialog.showOpenDialog = async (_, options) => ({
     canceled: false,
     filePaths: options.properties.includes('openFile') ? [source] : [exportsDirectory],

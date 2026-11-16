@@ -4,11 +4,13 @@ const { randomInt } = require('crypto');
 const { spawn } = require('child_process');
 const { pathToFileURL } = require('url');
 const backend = require('./backend');
+const { processIsAlive } = require('./monitor');
 
 const TASK_ID = /^\d{8}T\d{12}Z$/;
 const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp']);
 const STORE_NAME_PREFIXES = ['安途', '畅途', '顺途', '路安', '路畅', '远途', '驰援', '护航', '通途', '行安', '车安', '途顺', '路顺', '安行', '畅行', '佳途', '诚途', '联途', '宏途', '众途'];
 const STORE_NAME_SUFFIXES = ['道路救援', '汽车救援服务部', '车辆救援', '道路救援服务部', '汽车道路救援'];
+const AUTO_ACTIVE = new Set(['starting', 'checking_keys', 'running', 'pausing']);
 
 function inside(parent, file) {
   const relative = path.relative(path.resolve(parent), path.resolve(file));
@@ -50,13 +52,31 @@ function readTask(root, taskId) {
 function groupState(task, group) {
   const requests = (task.requests || []).filter((request) => Number(request.group) === Number(group.index));
   const unresolved = [...requests].reverse().find((request) => request.status === 'requesting');
+  const auto = automaticState(task);
   return {
     requests: requests.length,
     unresolved: Boolean(unresolved),
     attempt: unresolved?.attempt || requests.length,
-    canClaim: group.status !== 'composed' && !unresolved
+    canClaim: !auto.autoRunning && group.status !== 'composed' && !unresolved
       && requests.length < 2 && (task.requests || []).length < Number(task.max_requests || 0),
     canImport: group.status !== 'composed' && Boolean(unresolved),
+  };
+}
+
+function automaticState(task) {
+  const auto = task.auto_generation || {};
+  const declaredActive = AUTO_ACTIVE.has(auto.status);
+  const workerAlive = auto.worker_pid ? processIsAlive(auto.worker_pid) !== false : auto.status === 'starting';
+  const autoRunning = declaredActive && workerAlive;
+  const pending = (task.groups || []).filter(group => group.status !== 'composed').length;
+  const unresolved = (task.requests || []).some(request => request.status === 'requesting');
+  return {
+    autoStatus: declaredActive && !workerAlive ? 'stopped_unexpectedly' : (auto.status || 'idle'),
+    autoRunning,
+    autoCompleted: Number(auto.completed_groups || 0),
+    autoFailed: Number(auto.failed_requests || 0),
+    canAutoStart: pending > 0 && !autoRunning && !unresolved
+      && (task.requests || []).length < Number(task.max_requests || 0),
   };
 }
 
@@ -74,6 +94,7 @@ function taskSummary(task, stat) {
     storeName: task.store_identity?.name || (task.identity_mode === 'per_group' ? '每组不同店名' : ''),
     updatedAt: stat.mtime.toISOString(),
     packageVerified: task.package_verified === true,
+    ...automaticState(task),
   };
 }
 
@@ -228,6 +249,24 @@ async function claim(root, request) {
   return { prompt: result.text, task: detail(root, request.taskId) };
 }
 
+async function startAuto(root, request) {
+  if (request?.confirmPaid !== true) throw Error('请确认自动生成会使用现有 API 额度');
+  const directory = taskDirectory(root, request.taskId);
+  const current = detail(root, request.taskId);
+  if (!current.canAutoStart) throw Error('当前任务不能开始自动生成，请先刷新或处理已领取的组');
+  await runCommand(root, ['start-auto', '--job-dir', directory,
+    '--authorization', 'dashboard_explicit_paid_generation', '--max-workers', '50', '--confirm-paid']);
+  return detail(root, request.taskId);
+}
+
+async function pauseAuto(root, request) {
+  const directory = taskDirectory(root, request.taskId);
+  const current = detail(root, request.taskId);
+  if (!current.autoRunning) throw Error('自动生成当前没有运行');
+  await runCommand(root, ['pause-auto', '--job-dir', directory]);
+  return detail(root, request.taskId);
+}
+
 async function compose(root, request) {
   const directory = taskDirectory(root, request.taskId);
   const group = Number(request.group);
@@ -256,13 +295,22 @@ async function request(root, operation, payload = {}) {
   if (operation === 'detail') return detail(root, payload.taskId);
   if (operation === 'prepare') return prepare(root, payload);
   if (operation === 'claim') return claim(root, payload);
+  if (operation === 'start-auto') return startAuto(root, payload);
+  if (operation === 'pause-auto') return pauseAuto(root, payload);
   throw Error('不支持的三连屏操作');
+}
+
+function hasActiveWorkers(root) {
+  try {
+    return taskIds(root).some(taskId => automaticState(readTask(root, taskId).task).autoRunning);
+  } catch { return true; }
 }
 
 module.exports = {
   TASK_ID,
   compose,
   detail,
+  hasActiveWorkers,
   list,
   packageTask,
   request,
