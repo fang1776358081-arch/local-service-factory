@@ -3,7 +3,7 @@
   "owner": "fang1776358081-arch",
   "software_repo": "local-service-factory",
   "rules_repo": "local-service-factory",
-  "app_version": "1.4.26",
+  "app_version": "1.4.27",
   "rules_schema": 1,
   "public_keys": {
     "release-2026-09": "cj7iAJI4/SPUoEd72AGmw2huGDfKYSZ7U+Dozpdbas8="

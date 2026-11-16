@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from PIL import Image
 
@@ -85,6 +86,39 @@ class PinnedTriptychAuto(unittest.TestCase):
             updated = json.loads((folder / 'task.json').read_text(encoding='utf-8'))
             self.assertEqual(len(updated['requests']), 1)
             self.assertEqual(updated['requests'][0]['status'], 'succeeded')
+
+    def test_model_probe_timeout_is_not_reused_for_paid_generation_client(self):
+        created = []
+        class Models:
+            @staticmethod
+            def list():
+                return type('Page', (), {'data': [type('Model', (), {'id': 'gpt-image-2.5-flare'})()]})()
+        class Client:
+            def __init__(self, **kwargs):
+                self.kwargs = kwargs
+                self.models = Models()
+                created.append(self)
+        with patch('image_generate.configured_api_keys', return_value=['hidden']), \
+             patch.object(auto, '_base_config', return_value={'base_url': 'https://example.invalid/v1'}), \
+             patch('openai.OpenAI', Client):
+            _, clients = auto.discover_clients(1)
+        self.assertEqual(created[0].kwargs['timeout'], 20)
+        self.assertNotIn('timeout', clients[0][1].kwargs)
+        self.assertEqual(clients[0][1].kwargs['max_retries'], 0)
+
+    def test_single_lane_retries_same_group_before_touching_next_group(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.task(directory, count=2)
+            prompts = []
+            def flaky(client, config, prompt):
+                prompts.append(prompt)
+                if len(prompts) == 1:
+                    raise TimeoutError('fixture timeout')
+                return image_bytes()
+            code = auto.run(directory, config={'model': 'gpt-image-2.5-flare'},
+                            clients=[(1, object())], generate=flaky)
+            self.assertEqual(code, 0)
+            self.assertEqual(prompts[0], prompts[1])
 
 
 if __name__ == '__main__':

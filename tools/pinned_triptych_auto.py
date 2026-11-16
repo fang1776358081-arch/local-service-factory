@@ -126,12 +126,15 @@ def discover_clients(max_workers):
         kwargs = {'api_key': key, 'timeout': 20, 'max_retries': 0}
         if config.get('base_url'):
             kwargs['base_url'] = config['base_url']
-        client = OpenAI(**kwargs)
+        probe = OpenAI(**kwargs)
         for attempt in range(3):
             try:
-                ids = {str(getattr(item, 'id', '')) for item in getattr(client.models.list(), 'data', ())}
+                ids = {str(getattr(item, 'id', '')) for item in getattr(probe.models.list(), 'data', ())}
                 supported = ids & {'gpt-image-2-4k', 'gpt-image-2.5-flare'}
-                return (slot, client) if supported == {'gpt-image-2.5-flare'} else None
+                if supported != {'gpt-image-2.5-flare'}:
+                    return None
+                generation_kwargs = {key: value for key, value in kwargs.items() if key != 'timeout'}
+                return slot, OpenAI(**generation_kwargs)
             except Exception as error:
                 if getattr(error, 'status_code', None) in (401, 403) or attempt == 2:
                     return None
@@ -337,7 +340,7 @@ def run(folder, *, config=None, clients=None, generate=None):
                     _, latest = pinned.read_job(folder)
                     attempts = sum(int(request.get('group', 0)) == group for request in latest.get('requests', []))
                     if failure['error_type'] in RETRYABLE and attempts < 2:
-                        queue.append(group)
+                        queue.insert(0, group)
                     elif failure.get('rejection_kind') in {'parameters', 'model'}:
                         fatal = failure['error_type']
             _, live = pinned.read_job(folder)
