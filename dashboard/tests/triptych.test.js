@@ -79,3 +79,12 @@ test('lists and reads only bounded triptych task directories', () => {
   assert.throws(() => service.taskDirectory(home, '..\\outside'), /编号无效/);
   assert.throws(() => service.detail(home, '20261116T999999999999Z'), /ENOENT/);
 });
+
+test('recovers a newly created task when the child result cannot be parsed', () => {
+  const home = fixture();
+  const before = new Set(service.taskIds(home));
+  const { taskId } = writeTask(home, { phone: '13800138000', count: 2 });
+  assert.deepEqual(service.resolvePreparedTask(home, before, { json: null }, {
+    phone: '13800138000', count: 2,
+  }), taskId);
+});

@@ -19,6 +19,14 @@ function taskHome(root) {
   return path.resolve(root, 'output', 'road_rescue_pinned');
 }
 
+function taskIds(root) {
+  const home = taskHome(root);
+  if (!fs.existsSync(home)) return [];
+  return fs.readdirSync(home, { withFileTypes: true })
+    .filter(entry => entry.isDirectory() && TASK_ID.test(entry.name))
+    .map(entry => entry.name);
+}
+
 function taskDirectory(root, taskId) {
   if (!TASK_ID.test(String(taskId || ''))) throw Error('三连屏任务编号无效');
   const home = taskHome(root);
@@ -143,6 +151,22 @@ function randomStoreNames(count) {
   return names.slice(0, count);
 }
 
+function resolvePreparedTask(root, before, result, expected) {
+  const directory = path.resolve(String(result?.json?.job_dir || ''));
+  const home = taskHome(root);
+  const returnedId = inside(home, directory) && TASK_ID.test(path.basename(directory))
+    ? path.basename(directory) : null;
+  const candidates = returnedId ? [returnedId] : taskIds(root).filter(taskId => !before.has(taskId));
+  const matched = candidates.filter(taskId => {
+    try {
+      const { task } = readTask(root, taskId);
+      return task?.task_id === taskId && task?.phone === expected.phone && Number(task?.count) === expected.count;
+    } catch { return false; }
+  });
+  if (matched.length !== 1) throw Error('本地任务可能已创建，但无法唯一确认目录；请关闭窗口并刷新任务列表，不要重复创建');
+  return matched[0];
+}
+
 function runCommand(root, args, { timeout = 60000 } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(backend.python(), ['-X', 'utf8', backend.entry(root), 'pinned-triptych', ...args], {
@@ -184,16 +208,14 @@ function runCommand(root, args, { timeout = 60000 } = {}) {
 
 async function prepare(root, request) {
   const value = validatePrepare(request);
+  const before = new Set(taskIds(root));
   const args = ['prepare', '--phone', value.phone, '--count', String(value.count),
     '--style-start', String(value.styleStart), '--authorization', 'dashboard_explicit_confirmation'];
   for (const name of value.storeNames || [value.storeName]) args.push('--store-name', name);
   args.push('--confirm');
   if (value.fictionalName) args.push('--fictional-name');
   const result = await runCommand(root, args);
-  const directory = path.resolve(String(result.json?.job_dir || ''));
-  const home = taskHome(root);
-  if (!inside(home, directory) || !TASK_ID.test(path.basename(directory))) throw Error('三连屏工具返回了无效任务目录');
-  return detail(root, path.basename(directory));
+  return detail(root, resolvePreparedTask(root, before, result, value));
 }
 
 async function claim(root, request) {
@@ -244,7 +266,9 @@ module.exports = {
   list,
   packageTask,
   request,
+  resolvePreparedTask,
   taskDirectory,
+  taskIds,
   validatePrepare,
   randomStoreNames,
 };
