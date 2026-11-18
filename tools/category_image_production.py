@@ -534,16 +534,19 @@ def _validate_independent_delivery_structure_config(structure: dict[str, Any], c
     delivery_unit_count = int(structure.get("delivery_unit_count", -1))
     if generation_unit_count < 2 or delivery_unit_count != generation_unit_count:
         raise CategoryPromptError(f"{category_id} independent structure requires matching generation/delivery unit counts")
+    cover_count = int(structure.get("cover_count", 1))
+    if cover_count not in {0, 1}:
+        raise CategoryPromptError(f"{category_id} independent structure cover_count must be 0 or 1")
     delivery_roles = structure.get("delivery_roles")
+    expected_roles = (["cover"] if cover_count else []) + ["detail"] * (delivery_unit_count - cover_count)
     if (
         not isinstance(delivery_roles, list)
         or len(delivery_roles) != delivery_unit_count
-        or delivery_roles[0] != "cover"
-        or any(role != "detail" for role in delivery_roles[1:])
+        or delivery_roles != expected_roles
     ):
-        raise CategoryPromptError(f"{category_id} delivery_roles must be one cover followed by details")
+        raise CategoryPromptError(f"{category_id} delivery_roles do not match cover_count and detail deliveries")
     service_role_pool = structure.get("service_role_pool")
-    detail_count = delivery_unit_count - 1
+    detail_count = delivery_unit_count - cover_count
     if (
         not isinstance(service_role_pool, list)
         or len(service_role_pool) < detail_count
@@ -578,7 +581,8 @@ def selected_records(
     if str(structure.get("generation_mode") or "") == "independent_delivery_images":
         _validate_independent_delivery_structure_config(structure, category_id)
         unit_count = int(structure["generation_unit_count"])
-        detail_count = unit_count - 1
+        cover_count = int(structure.get("cover_count", 1))
+        detail_count = unit_count - cover_count
         expected_count = group_count * unit_count
         if len(rows) != expected_count:
             raise CategoryPromptError(f"selected range must contain {expected_count} prompts, found {len(rows)}")
@@ -590,8 +594,9 @@ def selected_records(
                 key=lambda row: int(row["index"]),
             )
             kinds = [_generation_kind(row) for row in group]
-            if kinds != ["cover", *["detail"] * detail_count]:
-                raise CategoryPromptError(f"group {group_index} must contain one cover followed by {detail_count} details")
+            expected_kinds = (["cover"] if cover_count else []) + ["detail"] * detail_count
+            if kinds != expected_kinds:
+                raise CategoryPromptError(f"group {group_index} does not match the configured independent delivery roles")
             if any(row.get("category_id") not in {None, category_id} for row in group):
                 raise CategoryPromptError(f"group {group_index} mixes prompts from another category")
             delivery_positions = [int(row.get("delivery_position", -1)) for row in group]
@@ -600,7 +605,7 @@ def selected_records(
             group_sizes = {_record_final_size(row) for row in group}
             if group_sizes != {"1024x1536"}:
                 raise CategoryPromptError(f"group {group_index} independent delivery images must use final_size 1024x1536")
-            service_roles = [_service_role(row) for row in group[1:]]
+            service_roles = [_service_role(row) for row in group[cover_count:]]
             if any(role is None or role not in service_role_pool for role in service_roles):
                 raise CategoryPromptError(f"group {group_index} contains service_role outside service_role_pool")
             if len(set(service_roles)) != detail_count:

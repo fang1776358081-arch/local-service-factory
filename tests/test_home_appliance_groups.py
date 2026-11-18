@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import json
+import tempfile
 import unittest
+from pathlib import Path
 
 import generate_home_appliance_groups as home_groups
-from tools import rule_updates
+from tools import category_image_production, rule_updates
 
 
 class HomeApplianceGroupTests(unittest.TestCase):
@@ -15,7 +17,13 @@ class HomeApplianceGroupTests(unittest.TestCase):
         exported = json.loads(documents[path])
         self.assertEqual(exported["category_id"], "home_appliance_repair")
         self.assertEqual(len(exported["service_items"]), 10)
-        self.assertEqual(exported["image_group_structure"]["generation_unit_count"], 7)
+        structure = exported["image_group_structure"]
+        self.assertEqual(structure["generation_unit_count"], 5)
+        self.assertEqual(structure["delivery_roles"], ["detail"] * 5)
+        category_image_production._validate_independent_delivery_structure_config(
+            structure,
+            "home_appliance_repair",
+        )
 
     def test_latest_cover_rules_include_physical_phone_and_real_shop(self) -> None:
         prompt, scene = home_groups.cover_prompt(26, "13317195304")
@@ -92,6 +100,50 @@ class HomeApplianceGroupTests(unittest.TestCase):
             self.assertEqual(len({row["service_role"] for row in rows[1:]}), 6)
         self.assertEqual(len(set(covers)), 100)
         self.assertEqual(len(set(names)), 100)
+
+    def test_random_pool_group_has_five_unrelated_watermarked_deliveries(self) -> None:
+        rows = home_groups.build_random_pool_rows(1401, "13317195304")
+        self.assertEqual(len(rows), 5)
+        self.assertEqual([row["generation_kind"] for row in rows], ["detail"] * 5)
+        self.assertEqual([row["delivery_position"] for row in rows], [1, 2, 3, 4, 5])
+        self.assertEqual(len({row["service_role"] for row in rows}), 5)
+        self.assertTrue(all(row["final_size"] == "1024x1536" for row in rows))
+        self.assertTrue(
+            all("panel_index" not in row and "triptych_layout_id" not in row for row in rows)
+        )
+        self.assertTrue(all(row["structure_version"] == home_groups.RANDOM_POOL_STRUCTURE_VERSION for row in rows))
+        self.assertTrue(all("本地程序添加电话和十个服务词" in row["prompt"] for row in rows))
+        self.assertTrue(all("汽车救援" in row["prompt"] for row in rows))
+        self.assertTrue(all(row["scene"]["category_config_version"] == "home_appliance_repair_category_content_v3" for row in rows))
+
+    def test_random_pool_hundred_groups_keep_five_distinct_roles(self) -> None:
+        prompts = []
+        for group_index in range(1401, 1501):
+            rows = home_groups.build_random_pool_rows(group_index, "13317195304")
+            self.assertEqual(len({row["service_role"] for row in rows}), 5)
+            prompts.extend(row["prompt"] for row in rows)
+        self.assertGreaterEqual(len(set(prompts)), 490)
+
+    def test_random_pool_rows_pass_formal_category_selection(self) -> None:
+        with tempfile.TemporaryDirectory() as folder:
+            rows = home_groups.build_random_pool_rows(1, "13317195304")
+            frozen = [
+                {**row, "index": index, "group_index": 1, "category_id": "home_appliance_repair"}
+                for index, row in enumerate(rows, start=1)
+            ]
+            Path(folder, "prompts.jsonl").write_text(
+                "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in frozen),
+                encoding="utf-8",
+            )
+            selected = category_image_production.selected_records(
+                Path(folder),
+                1,
+                1,
+                "home_appliance_repair",
+            )
+        self.assertEqual(len(selected), 5)
+        self.assertEqual([row["generation_kind"] for row in selected], ["detail"] * 5)
+        self.assertEqual([row["delivery_position"] for row in selected], [1, 2, 3, 4, 5])
 
 
 if __name__ == "__main__":

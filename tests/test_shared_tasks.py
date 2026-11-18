@@ -153,19 +153,21 @@ class SharedTasks(unittest.TestCase):
   self.assertEqual(len(view['groups']),100);self.assertEqual(b['prompt_count'],600)
   self.assertTrue(all(not g['images'] and 'prompt' not in g['units'][0] for g in view['groups']))
 
- def test_home_appliance_v3_batch_has_five_deliveries_and_ten_service_words(self):
+ def test_home_appliance_random_batch_has_five_watermarked_deliveries(self):
   b=self.batch('home_appliance_repair',2)
   rows=lib.selected(lib.batch_dir(b['category'],b['id']),b,[1,2])
   self.assertEqual(b['structure']['total_images'],5)
-  self.assertEqual(b['prompt_count'],14)
-  self.assertTrue(all(len(row['units'])==7 for row in rows))
+  self.assertEqual(b['prompt_count'],10)
+  self.assertTrue(all(len(row['units'])==5 for row in rows))
   self.assertTrue(all(len({unit['delivery_position'] for unit in row['units']})==5 for row in rows))
+  self.assertTrue(all({unit['kind'] for unit in row['units']}=={'detail'} for row in rows))
+  self.assertTrue(all(len({unit['service_role'] for unit in row['units']})==5 for row in rows))
   snapshot=lib.read(lib.batch_dir(b['category'],b['id'])/'snapshot.json')
   self.assertEqual(len(snapshot['business']['service_items']),10)
   self.assertEqual(snapshot['business']['service_items'][0],'家电维修')
   with self.ready():
    plan=lib.plan(self.request(b,[1,2]))
-  self.assertEqual(plan['pending_count'],14)
-  self.assertEqual(plan['max_requests'],28)
+  self.assertEqual(plan['pending_count'],10)
+  self.assertEqual(plan['max_requests'],20)
 
 if __name__=='__main__':unittest.main()

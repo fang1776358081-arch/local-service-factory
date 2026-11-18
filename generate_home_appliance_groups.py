@@ -380,6 +380,8 @@ DETAILS = [
 
 V3_STRUCTURE_VERSION = "home_appliance_repair_v3_1cover_1triptych_3details"
 V3_GENERATION_MODE = "independent_triptych_panels"
+RANDOM_POOL_STRUCTURE_VERSION = "home_appliance_repair_v4_random_5_images"
+RANDOM_POOL_GENERATION_MODE = "independent_delivery_images"
 V3_HEIGHTS = (
     {"id": "height_1408", "width": 1024, "height": 1408},
     {"id": "height_1472", "width": 1024, "height": 1472},
@@ -711,6 +713,37 @@ def build_v3_rows(group_index: int, phone: str) -> list[dict[str, Any]]:
             "height_profile_id": height["id"],
             "structure_version": V3_STRUCTURE_VERSION,
             "generation_mode": V3_GENERATION_MODE,
+        })
+    return rows
+
+
+def build_random_pool_rows(group_index: int, phone: str) -> list[dict[str, Any]]:
+    """Build five unrelated repair photos; every delivery receives local text overlays."""
+    roles = random.Random(f"{PROJECT_ID}:v4:random-pool:{group_index}").sample(
+        v3_detail_definitions(),
+        5,
+    )
+    rows: list[dict[str, Any]] = []
+    for position, detail in enumerate(roles, start=1):
+        prompt, scene = v3_detail_prompt(group_index, detail, position, "detail")
+        scene = dict(scene)
+        scene["category_config_version"] = "home_appliance_repair_category_content_v3"
+        scene["composition_signature"] = " | ".join(
+            str(value) for key, value in scene.items() if key != "composition_signature"
+        )
+        rows.append({
+            "role": "detail",
+            "generation_kind": "detail",
+            "generation_role": "detail",
+            "delivery_position": position,
+            "prompt": prompt,
+            "scene": scene,
+            "service_role": detail["title"],
+            "title": detail["title"],
+            "final_size": "1024x1536",
+            "height_profile_id": "full_1536",
+            "structure_version": RANDOM_POOL_STRUCTURE_VERSION,
+            "generation_mode": RANDOM_POOL_GENERATION_MODE,
         })
     return rows
 

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "category_id": "home_appliance_repair",
   "category_name": "家电维修",
-  "business_logic_summary": "家电维修沿用道路救援与货车救援维修的真实中国本地服务风格、1封面+1三拼图+3详情图交付结构和本地叠字流程，只使用家电、厨电、空调及数码维修场景。",
+  "business_logic_summary": "家电维修使用五张互不关联的随机真实维修现场图，不套封面或三拼模板；每张成品都由本地程序叠加手机号和家电服务词水印。",
   "scene_types": {
     "空调维修": "住宅或小店内检查空调内外机、线路、排水与制冷系统",
     "空调清洗": "拆洗空调滤网、蒸发器或外机换热器并做好室内防护",
@@ -48,58 +48,25 @@
     "燃气灶维修"
   ],
   "image_group_structure": {
-    "group_schema": "home_appliance_repair_v3_1cover_1triptych_3details",
-    "structure_version": "home_appliance_repair_v3_1cover_1triptych_3details",
-    "generation_mode": "independent_triptych_panels",
-    "cover_count": 1,
-    "triptych_count": 1,
-    "triptych_panel_count": 3,
-    "detail_count": 3,
+    "group_schema": "home_appliance_repair_v4_random_5_images",
+    "structure_version": "home_appliance_repair_v4_random_5_images",
+    "generation_mode": "independent_delivery_images",
+    "cover_count": 0,
+    "triptych_count": 0,
+    "triptych_panel_count": 0,
+    "detail_count": 5,
     "total_per_group": 5,
-    "generation_unit_count": 7,
-    "service_roles_per_group": 6,
-    "delivery_roles": ["cover", "triptych", "detail", "detail", "detail"],
-    "generation_roles": ["cover", "triptych_panel", "triptych_panel", "triptych_panel", "detail", "detail", "detail"],
+    "delivery_unit_count": 5,
+    "generation_unit_count": 5,
+    "service_roles_per_group": 5,
+    "delivery_roles": ["detail", "detail", "detail", "detail", "detail"],
+    "generation_roles": ["detail", "detail", "detail", "detail", "detail"],
     "detail_roles": ["空调维修", "空调清洗", "空调移机", "洗衣机维修", "冰箱维修", "热水器维修", "油烟机维修", "燃气灶维修", "电视维修", "电脑维修"],
     "service_role_pool": ["空调维修", "空调清洗", "空调移机", "洗衣机维修", "冰箱维修", "热水器维修", "油烟机维修", "燃气灶维修", "电视维修", "电脑维修"],
     "raw_generation_size": "1024x1536",
-    "height_profiles": [
-      {"id": "height_1408", "width": 1024, "height": 1408},
-      {"id": "height_1472", "width": 1024, "height": 1472},
-      {"id": "height_1536", "width": 1024, "height": 1536}
-    ],
-    "height_assignment": "按 group_index 轮换；同组5个交付文件宽高一致。",
-    "triptych_layouts": [
-      {
-        "id": "stacked_equal",
-        "name": "上中下等高三格",
-        "panels": [
-          {"panel_index": 1, "x": 0.0, "y": 0.0, "width": 1.0, "height": 0.333333},
-          {"panel_index": 2, "x": 0.0, "y": 0.333333, "width": 1.0, "height": 0.333334},
-          {"panel_index": 3, "x": 0.0, "y": 0.666667, "width": 1.0, "height": 0.333333}
-        ]
-      },
-      {
-        "id": "top_feature_bottom_pair",
-        "name": "上方大图下方双格",
-        "panels": [
-          {"panel_index": 1, "x": 0.0, "y": 0.0, "width": 1.0, "height": 0.56},
-          {"panel_index": 2, "x": 0.0, "y": 0.56, "width": 0.5, "height": 0.44},
-          {"panel_index": 3, "x": 0.5, "y": 0.56, "width": 0.5, "height": 0.44}
-        ]
-      },
-      {
-        "id": "top_pair_bottom_feature",
-        "name": "上方双格下方大图",
-        "panels": [
-          {"panel_index": 1, "x": 0.0, "y": 0.0, "width": 0.5, "height": 0.44},
-          {"panel_index": 2, "x": 0.5, "y": 0.0, "width": 0.5, "height": 0.44},
-          {"panel_index": 3, "x": 0.0, "y": 0.44, "width": 1.0, "height": 0.56}
-        ]
-      }
-    ],
-    "triptych_layout_assignment": "三种高度与三种布局按组号轮换。",
-    "triptych_gutter_px": 8
+    "final_size": "1024x1536",
+    "selection_rule": "每组从十类家电维修场景中确定性随机抽取五类且组内不重复；五张图互不要求构图、地点或人物连续。",
+    "overlay_rule": "五张成品分别在本地叠加服务角色、手机号和十个家电服务词。"
   },
   "negative_prompt": [
     "汽车救援",
