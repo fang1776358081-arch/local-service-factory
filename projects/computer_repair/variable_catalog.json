@@ -1,9 +1,8 @@
 {
   "schema_version": 1,
   "category_id": "computer_repair",
-  "revision": 0,
+  "revision": 1,
   "supported_roles": [
-    "cover",
     "detail"
   ],
   "dimensions": [
@@ -551,7 +550,19 @@
           "conditions": []
         },
         {
-          "id": "o_3_9c39a72b8c446e",
+          "id": "o_3_6eec268b850694",
+          "name": "为配置较好的侧透主机安装独立显卡、一体式水冷和高速固态硬盘",
+          "value": "为配置较好的侧透主机安装独立显卡、一体式水冷和高速固态硬盘",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_4_9c39a72b8c446e",
           "name": "组装完成后检查各接口与风扇连接，准备通电测试",
           "value": "组装完成后检查各接口与风扇连接，准备通电测试",
           "schema": {
@@ -677,7 +688,19 @@
           "conditions": []
         },
         {
-          "id": "o_1_1d9e19e2ff3a06",
+          "id": "o_1_925f7338d96cb7",
+          "name": "侧透机箱、较大的独立显卡和一体式水冷排",
+          "value": "侧透机箱、较大的独立显卡和一体式水冷排",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_1d9e19e2ff3a06",
           "name": "螺丝刀、扎带和零件盒",
           "value": "螺丝刀、扎带和零件盒",
           "schema": {
@@ -689,7 +712,7 @@
           "conditions": []
         },
         {
-          "id": "o_2_ff2d3901e0a618",
+          "id": "o_3_ff2d3901e0a618",
           "name": "电源、散热器和未通电的显示器",
           "value": "电源、散热器和未通电的显示器",
           "schema": {
@@ -2396,6 +2419,1131 @@
           "id": "o_2_ae9425730a2860",
           "name": "普通网卡、螺丝刀和连接线",
           "value": "普通网卡、螺丝刀和连接线",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "b6e7fe5df797d5",
+      "name": "高配主机组装 · 作业动作",
+      "source": "DETAILS.high_end_gaming_build.actions",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "high_end_gaming_build",
+        "field": "actions"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_1b5e55204b94e1",
+          "name": "在侧透机箱内安装高性能独立显卡、双通道内存和高速固态硬盘",
+          "value": "在侧透机箱内安装高性能独立显卡、双通道内存和高速固态硬盘",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_ad39f98270f347",
+          "name": "为高配置主机安装一体式水冷并规范连接水泵、冷排和机箱风扇",
+          "value": "为高配置主机安装一体式水冷并规范连接水泵、冷排和机箱风扇",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_d061607693bf19",
+          "name": "整理高功率电源模组线并检查显卡独立供电接口是否插紧",
+          "value": "整理高功率电源模组线并检查显卡独立供电接口是否插紧",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_36d1b66972c18b",
+          "name": "完成高配整机装配后检查风扇方向、显卡支撑和线材空间",
+          "value": "完成高配整机装配后检查风扇方向、显卡支撑和线材空间",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "50adf1518f92f6",
+      "name": "高配主机组装 · 环境",
+      "source": "DETAILS.high_end_gaming_build.settings",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "high_end_gaming_build",
+        "field": "settings"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_96be3961215733",
+          "name": "电脑维修店整机组装台",
+          "value": "电脑维修店整机组装台",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_af887d764f702a",
+          "name": "社区数码店侧透主机展示旁的工作位",
+          "value": "社区数码店侧透主机展示旁的工作位",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_6fb3b96f668072",
+          "name": "普通装机工作室",
+          "value": "普通装机工作室",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_bf31fc5ac0216b",
+          "name": "客户家中宽敞电脑桌",
+          "value": "客户家中宽敞电脑桌",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "d99deb6e41122a",
+      "name": "高配主机组装 · 工具物品",
+      "source": "DETAILS.high_end_gaming_build.props",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "high_end_gaming_build",
+        "field": "props"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_ddf2323a808e54",
+          "name": "侧透中塔机箱、大尺寸独立显卡和一体式水冷",
+          "value": "侧透中塔机箱、大尺寸独立显卡和一体式水冷",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_dbb311b74bace4",
+          "name": "模组电源、双条内存和高速固态硬盘",
+          "value": "模组电源、双条内存和高速固态硬盘",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_1ade7239f2a270",
+          "name": "显卡支撑架、扎带和精密螺丝刀",
+          "value": "显卡支撑架、扎带和精密螺丝刀",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_d75a38d8b1e75c",
+          "name": "已点亮但灯效克制的RGB风扇与维修工具",
+          "value": "已点亮但灯效克制的RGB风扇与维修工具",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "6d6cd3f70edb23",
+      "name": "水冷主机调试 · 作业动作",
+      "source": "DETAILS.liquid_cooling_tuning.actions",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "liquid_cooling_tuning",
+        "field": "actions"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_0ab2b58dda3e93",
+          "name": "检查一体式水冷泵线、冷排风扇方向和处理器温度",
+          "value": "检查一体式水冷泵线、冷排风扇方向和处理器温度",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_b95799f938a8d5",
+          "name": "重新固定水冷头并规范涂覆导热材料，排查温度异常",
+          "value": "重新固定水冷头并规范涂覆导热材料，排查温度异常",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_0e8625ee46d8b8",
+          "name": "调试侧透主机风扇转速与散热风道并观察运行状态",
+          "value": "调试侧透主机风扇转速与散热风道并观察运行状态",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_42aff6d18fa224",
+          "name": "对完成装机的水冷主机进行温度和噪音检查，屏幕数据不可读",
+          "value": "对完成装机的水冷主机进行温度和噪音检查，屏幕数据不可读",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "403bc971f68506",
+      "name": "水冷主机调试 · 环境",
+      "source": "DETAILS.liquid_cooling_tuning.settings",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "liquid_cooling_tuning",
+        "field": "settings"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_59d83303c23824",
+          "name": "电脑维修店测试台",
+          "value": "电脑维修店测试台",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_6fb3b96f668072",
+          "name": "普通装机工作室",
+          "value": "普通装机工作室",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_8fb62f4cff7456",
+          "name": "社区数码店后方检测位",
+          "value": "社区数码店后方检测位",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_1e51e6022bc8f0",
+          "name": "客户家中电脑桌",
+          "value": "客户家中电脑桌",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "8c844889d4e229",
+      "name": "水冷主机调试 · 工具物品",
+      "source": "DETAILS.liquid_cooling_tuning.props",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "liquid_cooling_tuning",
+        "field": "props"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_80539407d8656e",
+          "name": "侧透机箱、一体式水冷头和冷排",
+          "value": "侧透机箱、一体式水冷头和冷排",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_aed71e5c5fc743",
+          "name": "温度探头、导热材料和维修工具",
+          "value": "温度探头、导热材料和维修工具",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_6baadfd2f8a19d",
+          "name": "适度RGB风扇、显卡和整洁但真实的线材",
+          "value": "适度RGB风扇、显卡和整洁但真实的线材",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_b10a4046d0381f",
+          "name": "不可读监测界面与普通键盘鼠标",
+          "value": "不可读监测界面与普通键盘鼠标",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "075db5ca09e470",
+      "name": "蓝屏死机诊断 · 作业动作",
+      "source": "DETAILS.blue_screen_crash_diagnosis.actions",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "blue_screen_crash_diagnosis",
+        "field": "actions"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_1c6f459ddc88dc",
+          "name": "对频繁蓝屏的台式机逐项检查内存、固态硬盘和驱动状态",
+          "value": "对频繁蓝屏的台式机逐项检查内存、固态硬盘和驱动状态",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_affc4c267fbc41",
+          "name": "交换测试内存插槽并进行稳定性检测，屏幕内容保持不可读",
+          "value": "交换测试内存插槽并进行稳定性检测，屏幕内容保持不可读",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_39009abef5638f",
+          "name": "检查蓝屏电脑的硬盘健康、供电连接和散热状态",
+          "value": "检查蓝屏电脑的硬盘健康、供电连接和散热状态",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_0d8099a725d91b",
+          "name": "根据故障现象对主板、内存和显卡进行最小系统排查",
+          "value": "根据故障现象对主板、内存和显卡进行最小系统排查",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "f6b0146a116d45",
+      "name": "蓝屏死机诊断 · 环境",
+      "source": "DETAILS.blue_screen_crash_diagnosis.settings",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "blue_screen_crash_diagnosis",
+        "field": "settings"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_3ffac40d8c6dfa",
+          "name": "电脑维修店故障检测台",
+          "value": "电脑维修店故障检测台",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_f5752feb318f1b",
+          "name": "普通办公室空工位",
+          "value": "普通办公室空工位",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_ee6737e5fbb1f2",
+          "name": "社区数码维修柜台",
+          "value": "社区数码维修柜台",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_1e51e6022bc8f0",
+          "name": "客户家中电脑桌",
+          "value": "客户家中电脑桌",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "d2546664e3d6b8",
+      "name": "蓝屏死机诊断 · 工具物品",
+      "source": "DETAILS.blue_screen_crash_diagnosis.props",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "blue_screen_crash_diagnosis",
+        "field": "props"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_1152e897859afe",
+          "name": "内存条、检测U盘和防静电垫",
+          "value": "内存条、检测U盘和防静电垫",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_8ebb1882b306c6",
+          "name": "主板诊断卡、固态硬盘和螺丝刀",
+          "value": "主板诊断卡、固态硬盘和螺丝刀",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_b4751abc49e9fa",
+          "name": "拆开侧板的台式机与不可读测试界面",
+          "value": "拆开侧板的台式机与不可读测试界面",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_0448c39e29b75d",
+          "name": "标签清楚但无客户信息的替换测试部件",
+          "value": "标签清楚但无客户信息的替换测试部件",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "1f65bfefec52aa",
+      "name": "黑屏无信号诊断 · 作业动作",
+      "source": "DETAILS.no_signal_diagnosis.actions",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "no_signal_diagnosis",
+        "field": "actions"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_363d2c9a3b17b7",
+          "name": "检查黑屏主机的显卡供电、视频接口和内存接触状态",
+          "value": "检查黑屏主机的显卡供电、视频接口和内存接触状态",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_dbf5f2e35e3ed6",
+          "name": "使用替换显卡和测试显示器排查开机无信号问题",
+          "value": "使用替换显卡和测试显示器排查开机无信号问题",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_64d070f9b65e0d",
+          "name": "重新插装内存与显卡并观察主板诊断灯和风扇反应",
+          "value": "重新插装内存与显卡并观察主板诊断灯和风扇反应",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_81cbbcbaf021d0",
+          "name": "对能够通电但没有显示输出的主机进行最小系统检测",
+          "value": "对能够通电但没有显示输出的主机进行最小系统检测",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "a3e43f08351916",
+      "name": "黑屏无信号诊断 · 环境",
+      "source": "DETAILS.no_signal_diagnosis.settings",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "no_signal_diagnosis",
+        "field": "settings"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_309714bc6d4f29",
+          "name": "电脑维修店检测工位",
+          "value": "电脑维修店检测工位",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_6fb3b96f668072",
+          "name": "普通装机工作室",
+          "value": "普通装机工作室",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_a870defc5e3384",
+          "name": "小型办公室设备检修区",
+          "value": "小型办公室设备检修区",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_6e1fe7aa3ec992",
+          "name": "社区维修铺内侧工作台",
+          "value": "社区维修铺内侧工作台",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "82519ad43cc999",
+      "name": "黑屏无信号诊断 · 工具物品",
+      "source": "DETAILS.no_signal_diagnosis.props",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "no_signal_diagnosis",
+        "field": "props"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_a988e752e7e649",
+          "name": "测试显示器、视频线和替换显卡",
+          "value": "测试显示器、视频线和替换显卡",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_d88c923aa48001",
+          "name": "拆开侧板的主机、内存和主板诊断灯",
+          "value": "拆开侧板的主机、内存和主板诊断灯",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_0c529ece20cfb8",
+          "name": "电源测试器、螺丝刀和防静电垫",
+          "value": "电源测试器、螺丝刀和防静电垫",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_c3b91ff7481621",
+          "name": "无可读内容的黑屏显示器与普通键盘",
+          "value": "无可读内容的黑屏显示器与普通键盘",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "94639798765c3b",
+      "name": "过热降频诊断 · 作业动作",
+      "source": "DETAILS.thermal_throttling_diagnosis.actions",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "thermal_throttling_diagnosis",
+        "field": "actions"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_d599b8ba060cc8",
+          "name": "检查高负载时频繁降频的主机散热器、风扇和机箱风道",
+          "value": "检查高负载时频繁降频的主机散热器、风扇和机箱风道",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_b47c31fbfdd45b",
+          "name": "拆下处理器散热器清理旧导热材料并检查接触压力",
+          "value": "拆下处理器散热器清理旧导热材料并检查接触压力",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_a66da0d9cd84c0",
+          "name": "对显卡与处理器进行温度稳定性测试，界面数字不可读",
+          "value": "对显卡与处理器进行温度稳定性测试，界面数字不可读",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_2a4449b9b15a84",
+          "name": "清理冷排和防尘网并重新规划进出风方向以排查过热",
+          "value": "清理冷排和防尘网并重新规划进出风方向以排查过热",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "19c6a840fe08fb",
+      "name": "过热降频诊断 · 环境",
+      "source": "DETAILS.thermal_throttling_diagnosis.settings",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "thermal_throttling_diagnosis",
+        "field": "settings"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_c91a52ecf44b7d",
+          "name": "电脑维修店压力测试台",
+          "value": "电脑维修店压力测试台",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_6fb3b96f668072",
+          "name": "普通装机工作室",
+          "value": "普通装机工作室",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_1e51e6022bc8f0",
+          "name": "客户家中电脑桌",
+          "value": "客户家中电脑桌",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_531c6390ebe682",
+          "name": "社区数码店后方工作位",
+          "value": "社区数码店后方工作位",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "8f6bd104fdebc2",
+      "name": "过热降频诊断 · 工具物品",
+      "source": "DETAILS.thermal_throttling_diagnosis.props",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "DETAILS",
+        "detail": "thermal_throttling_diagnosis",
+        "field": "props"
+      },
+      "roles": [
+        "detail"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_bebf8fc6110df8",
+          "name": "塔式散热器、机箱风扇和温度探头",
+          "value": "塔式散热器、机箱风扇和温度探头",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_0cd414e3e07547",
+          "name": "一体式水冷排、软刷和导热材料",
+          "value": "一体式水冷排、软刷和导热材料",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_1cdc609a574ae4",
+          "name": "侧透高配主机与不可读压力测试界面",
+          "value": "侧透高配主机与不可读压力测试界面",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_14a4a5246886c2",
+          "name": "积灰防尘网、气吹和维修工具",
+          "value": "积灰防尘网、气吹和维修工具",
           "schema": {
             "type": "string",
             "allow_empty": false

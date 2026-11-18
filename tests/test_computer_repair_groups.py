@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 import generate_computer_repair_groups as computer_groups
-from tools import category_image_production, rule_updates
+from tools import category_image_production, rule_updates, variable_catalog
 
 
 class ComputerRepairGroupTests(unittest.TestCase):
@@ -47,6 +47,38 @@ class ComputerRepairGroupTests(unittest.TestCase):
             self.assertEqual(len({row["service_role"] for row in rows}), 5)
             prompts.extend(row["prompt"] for row in rows)
         self.assertGreaterEqual(len(set(prompts)), 490)
+
+    def test_high_spec_and_fault_diagnosis_scenes_are_in_random_pool(self) -> None:
+        titles = {detail["title"] for detail in computer_groups.DETAILS}
+        self.assertEqual(len(titles), 15)
+        self.assertTrue(
+            {"高配主机组装", "水冷主机调试", "蓝屏死机诊断", "黑屏无信号诊断", "过热降频诊断"}
+            <= titles
+        )
+        prompts = [
+            row["prompt"]
+            for group_index in range(1, 101)
+            for row in computer_groups.build_random_pool_rows(group_index, "13800138000")
+        ]
+        self.assertTrue(any("适度RGB灯效" in prompt and "高配主机组装" in prompt for prompt in prompts))
+        self.assertTrue(any("故障对象、检测工具和排查动作" in prompt and "蓝屏死机诊断" in prompt for prompt in prompts))
+
+    def test_high_spec_candidate_reaches_local_variable_preview(self) -> None:
+        catalog = variable_catalog.load("computer_repair")
+        self.assertEqual(catalog["supported_roles"], ["detail"])
+        dimension = next(
+            item for item in catalog["dimensions"]
+            if item["source"] == "DETAILS.high_end_gaming_build.actions"
+        )
+        option = dimension["options"][0]
+        previews = variable_catalog.preview(
+            "computer_repair",
+            {"catalog": catalog, "role": "detail", "force": {dimension["id"]: option["id"]}},
+        )
+        self.assertEqual(len(previews), 3)
+        self.assertTrue(all("高配主机组装" in row["prompt"] for row in previews))
+        self.assertTrue(all(option["value"] in row["prompt"] for row in previews))
+        self.assertTrue(all(row["api_called"] is False for row in previews))
 
     def test_rows_pass_formal_category_selection(self) -> None:
         with tempfile.TemporaryDirectory() as folder:

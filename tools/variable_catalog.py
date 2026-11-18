@@ -202,7 +202,8 @@ def defaults(category):
             d['name'] = (keys[1]+' · '+d['name']) if len(keys)>1 and keys[0]=='scene_types' else d['name']+' · '+d['source']
     if category=='business_ktv':
         for d in dimensions: d['roles']=['detail']
-    return {'schema_version':1,'category_id':category,'revision':0,'supported_roles':['detail'] if category=='business_ktv' else ['cover','detail'],'dimensions':dimensions,'readonly':readonly}
+    detail_only = category in {'business_ktv', 'computer_repair'}
+    return {'schema_version':1,'category_id':category,'revision':0,'supported_roles':['detail'] if detail_only else ['cover','detail'],'dimensions':dimensions,'readonly':readonly}
 
 
 def enrich_catalog(category, dimensions, readonly):
@@ -414,7 +415,7 @@ def save(category,data,expected):
         validate(data)
         # Exercise both real rendering paths before replacing the saved catalog.
         # Pure local prompt assembly only; existing manifests and APIs are untouched.
-        for role in ('cover','detail'):
+        for role in data.get('supported_roles', ('cover', 'detail')):
             try: preview(category,{'catalog':data,'role':role})
             except Exception as error: raise ValueError(f'{role}场景适配失败：{error}') from error
         previous={d['id']:d for d in old['dimensions']}

@@ -3,7 +3,7 @@
   "id": "computer_repair",
   "name": "电脑维修",
   "category": "本地生活服务",
-  "category_config_version": "computer_repair_category_content_v1",
+  "category_config_version": "computer_repair_category_content_v2",
   "content_group": {
     "cover_count": 0,
     "cover_role": "不使用固定封面",
@@ -24,7 +24,7 @@
   },
   "prompt_sources": {
     "category_config": "configs/categories/computer_repair.json",
-    "category_config_version": "computer_repair_category_content_v1",
+    "category_config_version": "computer_repair_category_content_v2",
     "visual_style": "configs/visual_styles/realistic_mobile_documentary_v2.json",
     "visual_style_version": "realistic_mobile_documentary_v2"
   },
