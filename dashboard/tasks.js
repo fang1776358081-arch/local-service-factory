@@ -2,6 +2,8 @@ const {spawn}=require('child_process');
 const path=require('path');
 const {pathToFileURL}=require('url');
 const allowed=new Set(['native-register','native-ingest','native-materialize','native-instance','native-plan','native-status','projects','overlay-text','assemble','batches','view','queue-view','queue-detail','raw-library-view','raw-library-folder','raw-library-qualify','raw-library-reindex','plan','start','resume','pause','retry','delete','replacement-prepare','repair-prepare','keys-view','keys-save','legacy-group','postprocess-view','postprocess-apply','postprocess-presets','postprocess-session','postprocess-preview','postprocess-preview-apply','postprocess-preview-sequence','postprocess-text','image-history','image-version-select','assets-view','assets-save','open-folder','package']);
+const extendedOperations=new Set(['plan','start','resume','retry','replacement-prepare','repair-prepare']);
+function operationTimeout(operation){return ['assemble','package'].includes(operation)?600000:extendedOperations.has(operation)?180000:60000;}
 function enrich(root,operation,value){
  const fs=require('fs'),a=require('./assets');
  const add=(item,key='path',field='url')=>{if(!item)return;const file=item[key];if(!a.allowed(root,file)||!a.allowed(root,fs.realpathSync(file)))throw Error('素材路径越界');item[field]=pathToFileURL(file).href+(item.sha256?'?v='+encodeURIComponent(item.sha256):'');};
@@ -23,7 +25,7 @@ function runTasks(root,operation,request={}){
     let output='',errors='',settled=false;
     const done=(error,value)=>{if(settled)return;if(!error)try{value=enrich(root,operation,value);}catch(e){error=e;}settled=true;clearTimeout(timer);error?reject(error):resolve(value);};
     // Assembly owns disk state and must survive window closure; only reads time out.
-    const timer=setTimeout(()=>{if(operation!=='assemble')child.kill();done(Error('本地任务仍在处理，请刷新查看磁盘状态'));},['assemble','package'].includes(operation)?600000:60000);
+    const timer=setTimeout(()=>{if(operation!=='assemble')child.kill();done(Error(operation==='plan'?'检查可用密钥超时，尚未提交生成任务，请稍后重试':'本地任务仍在处理，请刷新查看磁盘状态'));},operationTimeout(operation));
     child.stdout.setEncoding('utf8');child.stderr.setEncoding('utf8');
     child.stdout.on('data',s=>{output+=s;if(output.length>16*1024*1024)done(Error('结果过大，请分页读取'));});
     child.stderr.on('data',s=>{errors=(errors+s).slice(-1000);});
@@ -91,4 +93,4 @@ function hasActiveNativeTasks(root){
   return false;
  }catch{return true;} // Unreadable activity cannot safely authorize installation.
 }
-module.exports={runTasks,readLibraryJobs,hasActiveNativeTasks};
+module.exports={runTasks,readLibraryJobs,hasActiveNativeTasks,operationTimeout};

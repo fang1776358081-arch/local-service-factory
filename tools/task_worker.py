@@ -67,39 +67,41 @@ def register_library(category,batch,rows):
     return errors
 
 
-def resolve_raw(category,batch,group,unit):
+def resolve_raw(category,batch,group,unit,_context=None):
     """Resolve each panel independently, including saved partial repair evidence."""
-    path,data=lib.load_batch(category,batch)
+    from tools.task_queue import ReadContext,revision_units
+    context=_context or ReadContext()
+    path,data=context.load(category,batch)
     published=data.get('replacements',{}).get(f'{group}:{unit["delivery_position"]}')
-    revisions=[lib.read(p) for p in lib.category_dir(category).glob('batch_revision_*/batch.json')]
-    from tools.task_queue import revision_units
-    candidates=list(revision_units(category,batch,group,unit,revisions))
+    candidates=list(revision_units(category,batch,group,unit,context.revisions(category),_context=context))
     # A published replacement defines active content; do not fall back to its old prompt.
     if published:candidates=candidates[:1]
     for sb,sg,su in candidates:
-        raw=lib.unit_raw(category,sb,sg,su)
+        raw=context.raw(category,sb,sg,su)
         if raw_evidence_valid(raw,su):return sb,sg,su,raw
     return None
 
 
-def raw_valid(category,batch,group,unit,_seen=None):
+def raw_valid(category,batch,group,unit,_seen=None,_context=None):
+    from tools.task_queue import ReadContext
+    context=_context or ReadContext()
     seen=set(_seen or ())
     if batch in seen:return False
     seen.add(batch)
-    raw=lib.unit_raw(category,batch,group,unit)
+    raw=context.raw(category,batch,group,unit)
     try:
         if raw_evidence_valid(raw,unit):return True
-        if resolve_raw(category,batch,group,unit):return True
+        if resolve_raw(category,batch,group,unit,_context=context):return True
         # An explicitly published revision satisfies this delivery without
         # rewriting the original prompts or licence of a paused parent task.
-        _,data=lib.load_batch(category,batch)
+        _,data=context.load(category,batch)
         if f'{group}:{unit["delivery_position"]}' not in data.get('replacements',{}):return False
         source,g,units,_=lib.delivery_source(category,batch,group,unit['delivery_position'])
         if source==batch:return False
         kind='triptych' if unit['kind']=='triptych_panel' else unit['kind']
         target=lib.delivery_path(category,batch,group,unit['delivery_position'],kind)
         if not delivery_valid(target,unit):return False
-        return all(raw_valid(category,source,g,u,seen) for u in units)
+        return all(raw_valid(category,source,g,u,seen,_context=context) for u in units)
     except (OSError,ValueError,TypeError,KeyError):return False
 
 

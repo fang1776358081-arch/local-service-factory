@@ -136,7 +136,9 @@ function readDashboard() {
     .filter(({ monitor }) => monitor.claimedActive && monitor.processAlive === true)
     .map(({ job }) => job);
   const latestLibrary = jobs.find(job=>job.job_type==='shared-task');
-  const selectedJob = latestLibrary && (!sessionJob || latestLibrary.created_at > sessionJob.created_at) ? latestLibrary : sessionJob;
+  const historicalJob = latestLibrary && (!sessionJob || latestLibrary.created_at > sessionJob.created_at) ? latestLibrary : sessionJob;
+  // A recently completed task must never hide an older but still-live worker.
+  const selectedJob = activeJobs[0] || historicalJob;
   const jobSummary = selectedJob
     ? { ...summarizeJob(selectedJob, projectRoot), activeCount: activeJobs.length }
     : null;

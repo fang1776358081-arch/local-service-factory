@@ -1,8 +1,10 @@
 import io
+import threading
+import time
 import unittest
 from pathlib import Path
 from uuid import uuid4
-from unittest.mock import patch
+from unittest.mock import call,patch
 from PIL import Image
 from tools import task_library as lib, task_worker as worker
 
@@ -30,14 +32,14 @@ class TinySnowTasks(unittest.TestCase):
             def __init__(self,name):self.name=name
             def list(self):return type('Page',(),{'data':[type('Model',(),{'id':self.name})()]})()
         class Client:
-            def __init__(self,**kwargs):self.kwargs=kwargs;self.models=Models(Client.names.pop(0))
+            def __init__(self,**kwargs):self.kwargs=kwargs;self.models=Models(Client.names[kwargs['api_key']])
         saved={'provider':'relay','base_url':'https://tinysnow.one/v1','model':'gpt-image-2-4k','quality':'medium','api_size':'1024x1536','output_format':'png'}
         with patch('factory.effective_api_config',return_value=dict(saved)),patch('image_generate.configured_api_keys',return_value=['key-a','key-b']),patch('openai.OpenAI',Client):
-            Client.names=['gpt-image-2.5-flare','gpt-image-2-4k']
+            Client.names={'key-a':'gpt-image-2.5-flare','key-b':'gpt-image-2-4k'}
             slots=lib.probe_slot_models()
-            Client.names=['gpt-image-2.5-flare']
+            Client.names={'key-a':'gpt-image-2.5-flare'}
             flare=lib.active_model_config()
-            Client.names=['gpt-image-2-4k']
+            Client.names={'key-a':'gpt-image-2-4k'}
             fourk=lib.active_model_config()
         self.assertEqual(slots['1']['model'],'gpt-image-2.5-flare')
         self.assertEqual(slots['1']['api_size'],'1024x1536')
@@ -52,6 +54,72 @@ class TinySnowTasks(unittest.TestCase):
         self.assertEqual(fourk['raw_contract'],'tinysnow_2336_2352x3520_to_legacy_v1')
         with patch.object(lib,'api_config',return_value={'model':'offline'}):
             self.assertEqual(lib.active_model_config(),{'model':'offline'})
+
+    def test_key_pool_model_probes_run_concurrently_and_keep_slot_order(self):
+        lock=threading.Lock();active=0;maximum=0
+        def listed(base,key):
+            nonlocal active,maximum
+            with lock:active+=1;maximum=max(maximum,active)
+            try:
+                time.sleep(.03)
+                return ['gpt-image-2.5-flare' if key.endswith('1') else 'gpt-image-2-4k']
+            finally:
+                with lock:active-=1
+        base={'provider':'relay','base_url':'https://tinysnow.one/v1','model':'gpt-image-2-4k','quality':'medium','api_size':'1024x1536','output_format':'png'}
+        with patch('factory.effective_api_config',return_value=base), \
+             patch('image_generate.configured_api_keys',return_value=['key-1','key-2','key-3']), \
+             patch.object(lib,'listed_model_ids',side_effect=listed):
+            result=lib.probe_slot_models()
+        self.assertGreater(maximum,1)
+        self.assertEqual(list(result),['1','2','3'])
+        self.assertEqual(result['1']['model'],'gpt-image-2.5-flare')
+        self.assertEqual(result['2']['model'],'gpt-image-2-4k')
+
+    def test_recent_probe_cache_is_key_fingerprinted_and_reused(self):
+        root=Path('.runtime')/('test-model-cache-'+uuid4().hex);previous=lib.ROOT;lib.ROOT=root
+        calls=[]
+        base={'provider':'relay','base_url':'https://tinysnow.one/v1','model':'gpt-image-2-4k','quality':'medium','api_size':'1024x1536','output_format':'png'}
+        def listed(config,key):calls.append(key);return ['gpt-image-2.5-flare']
+        try:
+            with patch('factory.effective_api_config',return_value=base), \
+                 patch('image_generate.configured_api_keys',return_value=['key-a','key-b']), \
+                 patch.object(lib,'listed_model_ids',side_effect=listed):
+                first=lib.probe_slot_models(cache_seconds=300)
+                second=lib.probe_slot_models(cache_seconds=300)
+            self.assertEqual(first,second)
+            self.assertEqual(sorted(calls),['key-a','key-b'])
+            saved=lib.read(root/'.runtime/private/model-probe-cache.json')
+            self.assertNotIn('key-a',str(saved));self.assertNotIn('key-b',str(saved))
+        finally:
+            lib.ROOT=previous
+            if root.exists():
+                import shutil;shutil.rmtree(root)
+
+    def test_model_listing_retries_transient_errors_but_not_authentication(self):
+        class Failure(Exception):
+            def __init__(self,status_code=None):
+                self.status_code=status_code
+        class Models:
+            calls=0
+            failures=[]
+            def list(self):
+                Models.calls+=1
+                if Models.failures:raise Models.failures.pop(0)
+                return type('Page',(),{'data':[type('Model',(),{'id':'gpt-image-2.5-flare'})()]})()
+        class Client:
+            def __init__(self,**kwargs):self.models=Models()
+        base={'base_url':'https://tinysnow.one/v1'}
+        Models.calls=0;Models.failures=[Failure(),Failure()]
+        with patch('openai.OpenAI',Client),patch.object(lib.time,'sleep') as sleep:
+            self.assertEqual(lib.listed_model_ids(base,'hidden-key'),['gpt-image-2.5-flare'])
+        self.assertEqual(Models.calls,3)
+        self.assertEqual(sleep.call_args_list,[call(.5),call(1.)])
+        Models.calls=0;Models.failures=[Failure(401)]
+        with patch('openai.OpenAI',Client),patch.object(lib.time,'sleep') as sleep:
+            with self.assertRaisesRegex(ValueError,'检查密钥'):
+                lib.listed_model_ids(base,'hidden-key')
+        self.assertEqual(Models.calls,1)
+        sleep.assert_not_called()
 
     def test_detected_model_replaces_frozen_task_without_resetting_counts(self):
         root=Path('.runtime')/('test-model-adopt-'+uuid4().hex)

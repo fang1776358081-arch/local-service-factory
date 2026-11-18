@@ -11,6 +11,7 @@ import secrets
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime,timezone
 from tools import variable_catalog as vc, runtime_paths
 
@@ -467,14 +468,16 @@ def listed_model_ids(base,api_key):
     from openai import OpenAI
     kwargs={'api_key':api_key,'timeout':20,'max_retries':0}
     if base.get('base_url'):kwargs['base_url']=base['base_url']
-    try:
-        page=OpenAI(**kwargs).models.list()
-        return [getattr(item,'id','') for item in getattr(page,'data',())]
-    except Exception as error:
-        if getattr(error,'status_code',None) in (401,403):raise ValueError('密钥无法列出模型，请检查密钥') from None
-        raise ValueError('暂时无法读取可用模型，请稍后重试') from None
+    for attempt in range(3):
+        try:
+            page=OpenAI(**kwargs).models.list()
+            return [getattr(item,'id','') for item in getattr(page,'data',())]
+        except Exception as error:
+            if getattr(error,'status_code',None) in (401,403):raise ValueError('密钥无法列出模型，请检查密钥') from None
+            if attempt==2:raise ValueError('暂时无法读取可用模型，请稍后重试') from None
+            time.sleep(.5*(2**attempt))
 
-def probe_slot_models(slots=None):
+def probe_slot_models(slots=None,cache_seconds=0):
     # Offline tests replace api_config. A real call lists models per key and does not generate an image.
     if api_config is not _api_config_impl:return None
     import factory,image_generate
@@ -483,13 +486,29 @@ def probe_slot_models(slots=None):
     if not keys:raise ValueError('尚未配置 API Key，请让 Agent 协助设置')
     chosen=list(slots) if slots is not None else list(range(1,len(keys)+1))
     if any(type(slot) is not int or not 1<=slot<=len(keys) for slot in chosen):raise ValueError('API Key 槽位必须位于已配置范围内')
-    found={}
-    for slot in chosen:
+    if not chosen:return {}
+    cache_file=ROOT/'.runtime/private/model-probe-cache.json'
+    signature=digest({'base':base,'slots':chosen,'keys':[hashlib.sha256(keys[slot-1].encode()).hexdigest() for slot in chosen]})
+    if cache_seconds:
+        try:
+            cached=read(cache_file)
+            if cached.get('signature')==signature and time.time()-float(cached.get('checked_at',0))<=cache_seconds:
+                value=cached.get('slot_models')
+                if isinstance(value,dict) and list(value)==[str(slot) for slot in chosen]:return value
+        except (OSError,ValueError,TypeError):pass
+    def inspect(slot):
         try:model=choose_listed_model(listed_model_ids(base,keys[slot-1]))
         except ValueError as error:
             if '唯一可用模型' in str(error):raise ValueError(f'密钥 {slot} 没有唯一可用的生图模型，不能开始') from None
             raise ValueError(f'密钥 {slot} {error}') from None
-        found[str(slot)]=contract_for_model(base,model)
+        return str(slot),contract_for_model(base,model)
+    # Model discovery is read-only network I/O. Checking a large key pool in
+    # series made a 50-key plan take more than the dashboard's entire timeout.
+    # Keep one bounded request chain per key while preserving deterministic
+    # slot ordering in the returned authorization record.
+    with ThreadPoolExecutor(max_workers=min(50,len(chosen))) as pool:
+        found=dict(pool.map(inspect,chosen))
+    if cache_seconds:write(cache_file,{'signature':signature,'checked_at':time.time(),'slot_models':found})
     return found
 
 def active_model_config():
@@ -605,16 +624,20 @@ def plan(request,_parent=None):
             if validation.get('status') in {'rejected','needs_fix'} or validation.get('decision')=='rejected':
                 blocks.append('所选组包含未通过审核的图片，请由 Agent 按反馈处理，不自动重复生成');break
     from tools.task_worker import raw_valid
+    from tools.task_queue import ReadContext
     from tools.raw_library import selection,validate_binding
     reuse_selection=selection(data)
     bindings={b['unit']:b for b in reuse_selection['bindings']}
     pending=[];reused=0;library_reused=0;reuse_blocks=[];retained_ids=[]
+    raw_context=ReadContext(full=True)
+    raw_context.batches[(category,batch)]=(path,data)
+    raw_context.rows[(category,batch)]={row['group']:row for row in rows}
     for row in rows:
         for unit in row['units']:
             if unit['id'] in bindings:
                 try:validate_binding(category,data,unit,bindings[unit['id']]);library_reused+=1
                 except (OSError,ValueError):reuse_blocks.append('冻结复用素材已失效，请核对选图；不会自动改成付费生成')
-            elif raw_valid(category,batch,row['group'],unit): reused+=1;retained_ids.append(unit['id'])
+            elif raw_valid(category,batch,row['group'],unit,_context=raw_context): reused+=1;retained_ids.append(unit['id'])
             elif unit.get('inherited_raw'):
                 reused+=1;blocks.append('冻结继承素材待本地恢复，不能改为付费生成')
             else: pending.append(unit['id'])
@@ -622,7 +645,10 @@ def plan(request,_parent=None):
     slot_models=None
     try:
         if pending:
-            slot_models=probe_slot_models()
+            # The immediately following start command revalidates this plan in
+            # a new process. Reuse only the just-completed, key-fingerprinted
+            # capability probe so one click never scans a large pool twice.
+            slot_models=probe_slot_models(cache_seconds=300)
             config=active_model_config() if not slot_models else next(iter(slot_models.values()))
         else:config=api_config()
     except Exception as error:

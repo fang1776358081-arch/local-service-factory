@@ -5,7 +5,7 @@ from tools import task_library as lib
 class ReadContext:
     """Memoize immutable manifests within ONE read, never in paid execution."""
     def __init__(self,full=False):
-        self.batches={};self.rows={};self.outputs={};self.controls={};self.parents={};self.budgets={};self.full=full
+        self.batches={};self.rows={};self.outputs={};self.controls={};self.parents={};self.budgets={};self.revision_records={};self.full=full
 
     def load(self,category,batch):
         key=(category,batch)
@@ -55,6 +55,11 @@ class ReadContext:
             self.rows[key]={r['group']:r for r in lib.selected(path,data,groups)} if groups else {}
         if group not in self.rows[key]:raise ValueError('原图来源组不存在')
         return self.rows[key][group]
+
+    def revisions(self,category):
+        if category not in self.revision_records:
+            self.revision_records[category]=[lib.read(p) for p in lib.category_dir(category).glob('batch_revision_*/batch.json')]
+        return self.revision_records[category]
 
 
 def origin_keys(category,batch,rows,_context=None):

@@ -28,7 +28,7 @@ const healthText = {
 };
 
 const partialTask = job => (job?.rawStatus || job?.status) === 'completed_with_errors';
-const taskStateText = job => (job?.rawStatus || job?.status)==='recovering' ? '自动补齐中' : partialTask(job) ? statusText.completed_with_errors : (healthText[job.health] || statusText[job.status] || job.status);
+const taskStateText = job => job?.health==='finished' ? '最近任务已完成' : (job?.rawStatus || job?.status)==='recovering' ? '自动补齐中' : partialTask(job) ? statusText.completed_with_errors : (healthText[job.health] || statusText[job.status] || job.status);
 
 const formatTime = (iso) => (
   iso ? new Date(iso).toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit' }) : '--'

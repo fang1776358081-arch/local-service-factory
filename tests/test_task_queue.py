@@ -264,6 +264,19 @@ class RawQueue(unittest.TestCase):
         self.assertEqual(context.raw(b['category'],b['id'],1,unit),lib.unit_raw(b['category'],b['id'],1,unit))
         self.assertEqual(context.delivery(b['category'],b['id'],1,1,'cover'),lib.delivery_path(b['category'],b['id'],1,1,'cover'))
 
+    def test_large_plan_reuses_one_raw_resolution_context(self):
+        b=self.batch(count=43);req=self.request(b,list(range(1,44)))
+        contexts=[];original=worker.raw_valid
+        def capture(*args,**kwargs):
+            contexts.append(kwargs.get('_context'))
+            return original(*args,**kwargs)
+        with self.ready(),patch.object(worker,'raw_valid',side_effect=capture):
+            result=lib.plan(req)
+        self.assertEqual(result['pending_count'],301)
+        self.assertEqual(len(contexts),301)
+        self.assertIsNotNone(contexts[0])
+        self.assertEqual(len({id(context) for context in contexts}),1)
+
     def test_new_read_context_rechecks_registered_asset_root(self):
         b=self.batch();context=queue.ReadContext();old=context.output(b['category'],b['id'])
         directory=self.root/'custom-assets';directory.mkdir()
