@@ -128,7 +128,7 @@ class SharedTasks(unittest.TestCase):
    self.assertEqual(lib.read(file.parent/'license.json'),lic)
 
  def test_real_local_render_and_queue_use_isolated_batch(self):
-  for category in ('road_rescue','pet_transport'):
+  for category in ('road_rescue','pet_transport','home_appliance_repair'):
    b=self.batch(category);req=self.request(b,[1])
    with self.ready(),patch.object(lib,'launch',return_value=99999999):
     p=lib.plan(req);task=lib.start({**req,'plan_sha256':p['plan_sha256'],'request_id':'render-'+category,'authorization':'execute_selected_groups'})
@@ -152,5 +152,20 @@ class SharedTasks(unittest.TestCase):
   view=lib.view({**self.request(b,list(range(1,101))),'limit':100,'include_prompts':False})
   self.assertEqual(len(view['groups']),100);self.assertEqual(b['prompt_count'],600)
   self.assertTrue(all(not g['images'] and 'prompt' not in g['units'][0] for g in view['groups']))
+
+ def test_home_appliance_v3_batch_has_five_deliveries_and_ten_service_words(self):
+  b=self.batch('home_appliance_repair',2)
+  rows=lib.selected(lib.batch_dir(b['category'],b['id']),b,[1,2])
+  self.assertEqual(b['structure']['total_images'],5)
+  self.assertEqual(b['prompt_count'],14)
+  self.assertTrue(all(len(row['units'])==7 for row in rows))
+  self.assertTrue(all(len({unit['delivery_position'] for unit in row['units']})==5 for row in rows))
+  snapshot=lib.read(lib.batch_dir(b['category'],b['id'])/'snapshot.json')
+  self.assertEqual(len(snapshot['business']['service_items']),10)
+  self.assertEqual(snapshot['business']['service_items'][0],'家电维修')
+  with self.ready():
+   plan=lib.plan(self.request(b,[1,2]))
+  self.assertEqual(plan['pending_count'],14)
+  self.assertEqual(plan['max_requests'],28)
 
 if __name__=='__main__':unittest.main()

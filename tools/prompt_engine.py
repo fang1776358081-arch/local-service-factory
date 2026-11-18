@@ -29,6 +29,7 @@ def load_category_config(category_id: str) -> dict[str, Any]:
         "ktv",
         "pipe_unclogging",
         "road_rescue",
+        "home_appliance_repair",
         "pet_transport",
         "truck_rescue",
     }

@@ -378,6 +378,96 @@ DETAILS = [
 ]
 
 
+V3_STRUCTURE_VERSION = "home_appliance_repair_v3_1cover_1triptych_3details"
+V3_GENERATION_MODE = "independent_triptych_panels"
+V3_HEIGHTS = (
+    {"id": "height_1408", "width": 1024, "height": 1408},
+    {"id": "height_1472", "width": 1024, "height": 1472},
+    {"id": "height_1536", "width": 1024, "height": 1536},
+)
+V3_LAYOUTS = (
+    {"id": "stacked_equal", "panels": (
+        {"panel_index": 1, "x": 0.0, "y": 0.0, "width": 1.0, "height": 0.333333},
+        {"panel_index": 2, "x": 0.0, "y": 0.333333, "width": 1.0, "height": 0.333334},
+        {"panel_index": 3, "x": 0.0, "y": 0.666667, "width": 1.0, "height": 0.333333},
+    )},
+    {"id": "top_feature_bottom_pair", "panels": (
+        {"panel_index": 1, "x": 0.0, "y": 0.0, "width": 1.0, "height": 0.56},
+        {"panel_index": 2, "x": 0.0, "y": 0.56, "width": 0.5, "height": 0.44},
+        {"panel_index": 3, "x": 0.5, "y": 0.56, "width": 0.5, "height": 0.44},
+    )},
+    {"id": "top_pair_bottom_feature", "panels": (
+        {"panel_index": 1, "x": 0.0, "y": 0.0, "width": 0.5, "height": 0.44},
+        {"panel_index": 2, "x": 0.5, "y": 0.0, "width": 0.5, "height": 0.44},
+        {"panel_index": 3, "x": 0.0, "y": 0.44, "width": 1.0, "height": 0.56},
+    )},
+)
+STORE_NAME_PREFIXES = (
+    "诚信", "顺达", "万家", "安心", "便民", "佳诚", "恒信", "惠民", "兴旺", "速达",
+    "宏达", "永兴", "精诚", "邻家", "百顺", "鑫诚", "诚鑫", "佳乐", "同城", "放心",
+    "利民", "众诚", "好帮手", "新诚", "安顺",
+)
+STORE_NAME_SUFFIXES = ("家电维修", "家电服务", "家电维修服务部", "家电综合维修")
+
+V3_EXTRA_DETAILS = (
+    {
+        "slug": "ac_cleaning",
+        "title": "空调清洗",
+        "actions": [
+            "拆下空调室内机滤网并使用防水罩清洗蒸发器",
+            "在接水防护完整的情况下清洗壁挂空调风轮和导风板",
+            "清理空调外机换热器表面灰尘并检查散热状态",
+            "清洗完成后装回滤网并测试送风和排水",
+        ],
+        "settings": ["普通住宅客厅", "老小区卧室", "沿街小店室内", "出租房空调位置"],
+        "props": ["空调清洗罩和接水管", "软毛刷和清洗机", "防水布与工具包", "拆下的滤网和接水桶"],
+    },
+    {
+        "slug": "refrigerator_repair",
+        "title": "冰箱维修",
+        "actions": [
+            "拆开冰箱后部检修盖检查压缩机启动器与线路",
+            "检查冰箱冷藏室排水孔和蒸发器结霜情况",
+            "用万用表检测冰箱温控器、风扇和电源线路",
+            "更换冰箱门封条并检查箱门密封状态",
+            "检查冰箱制冷管路后进行规范检漏和运行测试",
+        ],
+        "settings": ["普通家庭厨房", "住宅餐厅冰箱位置", "社区家电维修店工作位", "出租屋生活区"],
+        "props": ["万用表与螺丝盒", "检漏工具和维修灯", "拆下的后盖与零件盘", "温度计和普通工具包"],
+    },
+    {
+        "slug": "television_repair",
+        "title": "电视维修",
+        "actions": [
+            "拆开液晶电视后盖检查电源板和主板连接",
+            "用万用表检测电视电源板输出与保险部件",
+            "检查电视背光排线和灯条连接状态",
+            "更换电视老化电容并整理内部线束",
+            "装回电视后盖前进行通电和显示测试，屏幕内容不可读",
+        ],
+        "settings": ["普通家庭客厅", "家电维修店工作台", "社区维修铺检测区", "住宅餐厅靠墙电视位置"],
+        "props": ["万用表与绝缘螺丝刀", "维修灯和零件盒", "拆下的后盖和螺丝盘", "防静电垫与检测线"],
+    },
+)
+
+
+def v3_detail_definitions() -> list[dict[str, Any]]:
+    legacy = {item["slug"]: item for item in DETAILS}
+    selected = [
+        {**legacy["ac_refrigerant"], "title": "空调维修"},
+        V3_EXTRA_DETAILS[0],
+        {**legacy["ac_installation"], "title": "空调移机"},
+        legacy["washing_machine_repair"],
+        V3_EXTRA_DETAILS[1],
+        legacy["water_heater_repair"],
+        legacy["range_hood_repair"],
+        legacy["gas_stove_repair"],
+        V3_EXTRA_DETAILS[2],
+        legacy["computer_repair"],
+    ]
+    return [dict(item) for item in selected]
+
+
 def load_json(path: Path) -> dict[str, Any]:
     return runtime_paths.read_json(path)
 
@@ -423,7 +513,9 @@ def logo_description(group_index: int) -> str:
 def cover_prompt(group_index: int, phone: str, variant: int = 0) -> tuple[str, dict[str, Any]]:
     rng = random.Random(f"{PROJECT_ID}:cover:{group_index}:{variant}")
     visual_version = visual_style_profiles.visual_style_version(PROJECT_ID)
-    category_version = visual_style_profiles.category_config_version(PROJECT_ID)
+    # Legacy 1+8 records remain immutable history even after the dashboard
+    # moves new batches to the v3 five-image structure.
+    category_version = "home_appliance_repair_category_content_v1"
     scene = {
         "sign_style": rng.choice(COVER_SIGN_STYLES),
         "facade": rng.choice(COVER_FACADES),
@@ -464,7 +556,7 @@ def cover_prompt(group_index: int, phone: str, variant: int = 0) -> tuple[str, d
 def detail_prompt(group_index: int, detail: dict[str, Any], variant: int = 0) -> tuple[str, dict[str, Any]]:
     rng = random.Random(f"{PROJECT_ID}:detail:{detail['slug']}:{group_index}:{variant}")
     visual_version = visual_style_profiles.visual_style_version(PROJECT_ID)
-    category_version = visual_style_profiles.category_config_version(PROJECT_ID)
+    category_version = "home_appliance_repair_category_content_v1"
     scene = {
         "action": rng.choice(detail["actions"]),
         "setting": rng.choice(detail["settings"]),
@@ -488,6 +580,139 @@ def detail_prompt(group_index: int, detail: dict[str, Any], variant: int = 0) ->
     )
     prompt += visual_style_profiles.prompt_suffix(PROJECT_ID, "service_detail")
     return prompt, scene
+
+
+@variable_catalog.managed('home_appliance_repair', 'cover', finish_result='always')
+def v3_cover_prompt(group_index: int, phone: str, variant: int = 0) -> tuple[str, dict[str, Any]]:
+    rng = random.Random(f"{PROJECT_ID}:v3:cover:{group_index}:{variant}")
+    store_name = (
+        STORE_NAME_PREFIXES[(group_index - 1 + variant * 7) % len(STORE_NAME_PREFIXES)]
+        + STORE_NAME_SUFFIXES[((group_index - 1) // len(STORE_NAME_PREFIXES) + variant) % len(STORE_NAME_SUFFIXES)]
+    )
+    scene = {
+        "store_name": store_name,
+        "sign_style": rng.choice(COVER_SIGN_STYLES),
+        "facade": rng.choice(COVER_FACADES),
+        "interior": rng.choice(COVER_INTERIORS),
+        "camera": rng.choice(COVER_CAMERAS),
+        "street": rng.choice(COVER_STREET_ELEMENTS),
+        "lighting": rng.choice(COVER_LIGHTING),
+        "logo": logo_description(group_index + variant * 61),
+        "service_line": SERVICE_LINES[(group_index - 1 + variant) % len(SERVICE_LINES)],
+        "visual_style_version": visual_style_profiles.visual_style_version(PROJECT_ID),
+        "category_config_version": "home_appliance_repair_category_content_v2",
+    }
+    scene["composition_signature"] = " | ".join(scene.values())
+    prompt = (
+        "中国街边正在营业的普通家电维修门店，普通顾客用手机随手拍下的单张竖幅真实照片。"
+        "必须像真实本地生活服务记录，不是招牌设计稿、广告海报、门店效果图、影棚广告或高端连锁品牌。"
+        f"建筑与门面：{scene['facade']}；门头材质：{scene['sign_style']}；店内状态：{scene['interior']}。"
+        f"拍摄机位：{scene['camera']}；光线：{scene['lighting']}；周边生活元素：{scene['street']}。"
+        "建筑、门面、店内设备和街道路面必须属于同一真实地点，保留自然玻璃反光、墙面旧痕、固定螺丝、"
+        "板材拼缝、普通杂物和正常营业痕迹，画面实用、克制、可信，不豪华也不过度破败。"
+        f"主招牌唯一完整店名清楚准确写成“{store_name}”，店名中“家电维修”或“家电服务”类目文字必须完整保留。"
+        f"主招牌配一个本地小店自制图形标识“{scene['logo']}”，不模仿任何现有品牌；服务小字写成“{scene['service_line']}”。"
+        f"同一块实体主招牌板面内必须清楚完整写有“联系电话：{phone}”或“电话：{phone}”，每个数字准确可读，"
+        "联系电话优先位于招牌底部或右侧联系信息区，不得放在墙面、门柱、车辆、立牌、店内背景或悬浮字幕上。"
+        "门头文字、电话号码、边框和图形必须与招牌板面具有一致透视、光照、阴影、反光与安装结构，"
+        "不能像后期贴字，不能生成其他店名、其他电话号码、价格、地区、时效或服务承诺。"
+        "门店内外只能出现家电、厨电、空调、电视、电脑及其维修工具，不得出现救援车、拖车、货车维修、轮胎、"
+        "搭电或道路救援业务证据。可以有一名穿普通蓝灰工装的维修师傅自然工作，不看镜头。"
+        "画面中部50%至60%保持连续、相对简洁的真实场景，避开人脸和关键维修动作，供本地程序叠加醒目大电话；"
+        "画面底部83%至98%保留街面、台阶或安静背景，供本地程序叠加两行五列的十个家电服务词。"
+        "原图不要生成中部电话条、底部服务词、按钮、卡片、宫格、边框或任何UI面板。"
+        "严格排除汽车救援、道路救援、货车救援、拖车、补胎换胎、搭电救援、救援车、汽车维修车间、"
+        "欧美环境、豪华展厅、3D渲染、插画、二维码、水印、乱码、可读车牌和真实品牌标志。"
+    )
+    prompt += visual_style_profiles.prompt_suffix(PROJECT_ID, "storefront_cover")
+    return prompt, scene
+
+
+@variable_catalog.managed('home_appliance_repair', 'detail', finish_result='always')
+def v3_detail_prompt(
+    group_index: int,
+    detail: dict[str, Any],
+    relative_index: int,
+    generation_kind: str,
+) -> tuple[str, dict[str, Any]]:
+    variant = relative_index - 1
+    rng = random.Random(f"{PROJECT_ID}:v3:detail:{detail['slug']}:{group_index}:{variant}")
+    scene = {
+        "action": rng.choice(detail["actions"]),
+        "setting": rng.choice(detail["settings"]),
+        "props": rng.choice(detail["props"]),
+        "camera": rng.choice(DETAIL_CAMERA_STYLES),
+        "lighting": rng.choice(DETAIL_LIGHTING),
+        "worker": rng.choice(DETAIL_WORKER_STATES),
+        "visual_style_version": visual_style_profiles.visual_style_version(PROJECT_ID),
+        "category_config_version": "home_appliance_repair_category_content_v2",
+    }
+    scene["composition_signature"] = " | ".join(scene.values())
+    panel_rule = (
+        "本图是三拼图中的一个独立实景面板，只表现当前一种维修动作，不自行生成拼贴、边框、标题或分栏；"
+        "主体放在中央安全区，四周保留少量可裁切背景。"
+        if generation_kind == "triptych_panel"
+        else "顶部3.5%至10.5%保留简洁背景供本地添加当前服务角色标签。"
+    )
+    prompt = (
+        f"真实中国本地家电维修现场，竖版普通手机随手拍照片，唯一主题是“{detail['title']}”。"
+        f"地点：{scene['setting']}；核心动作：{scene['action']}；现场工具与物件：{scene['props']}。"
+        f"人物状态：{scene['worker']}；拍摄方式：{scene['camera']}；光线：{scene['lighting']}。"
+        "家电结构、拆装位置、工具、双手和操作关系必须符合真实维修常识；人物不看镜头，环境有自然生活杂物，"
+        "不刻意摆拍，不过度洁净，不像广告。"
+        f"{panel_rule}"
+        "画面中部49%至58.5%保留横向可读背景，底部83.5%至97.5%保留较安静背景，供本地程序添加电话和十个服务词；"
+        "关键人脸、手部、设备故障点和核心操作不得被这些区域遮挡。"
+        "原始图片不要生成电话号码、中文标题、价格、二维码、水印、真实品牌标志或可读屏幕文字。"
+        "严格排除汽车救援、道路救援、货车救援、拖车、轮胎、搭电、救援车辆、汽车维修工具、欧美环境、"
+        "插画、CG、3D、宣传海报、豪华工作室、畸形手指、不合理工具和危险操作。"
+    )
+    prompt += visual_style_profiles.prompt_suffix(PROJECT_ID, "service_detail")
+    return prompt, scene
+
+
+def build_v3_rows(group_index: int, phone: str) -> list[dict[str, Any]]:
+    height = V3_HEIGHTS[(group_index - 1) % len(V3_HEIGHTS)]
+    layout = V3_LAYOUTS[((group_index - 1) // len(V3_HEIGHTS)) % len(V3_LAYOUTS)]
+    final_size = f"{height['width']}x{height['height']}"
+    roles = random.Random(f"{PROJECT_ID}:v3:roles:{group_index}").sample(v3_detail_definitions(), 6)
+    cover_text, cover_scene = v3_cover_prompt(group_index, phone)
+    rows: list[dict[str, Any]] = [{
+        "role": "cover",
+        "generation_kind": "cover",
+        "generation_role": "cover",
+        "delivery_position": 1,
+        "prompt": cover_text,
+        "scene": cover_scene,
+        "service_role": None,
+        "final_size": final_size,
+        "height_profile_id": height["id"],
+        "structure_version": V3_STRUCTURE_VERSION,
+        "generation_mode": V3_GENERATION_MODE,
+    }]
+    for relative_index, detail in enumerate(roles, start=1):
+        kind = "triptych_panel" if relative_index <= 3 else "detail"
+        delivery_position = 2 if kind == "triptych_panel" else relative_index - 1
+        prompt, scene = v3_detail_prompt(group_index, detail, relative_index, kind)
+        rows.append({
+            "role": kind,
+            "generation_kind": kind,
+            "generation_role": kind,
+            "delivery_position": delivery_position,
+            "panel_index": relative_index if kind == "triptych_panel" else None,
+            "triptych_panel_index": relative_index if kind == "triptych_panel" else None,
+            "triptych_layout_id": layout["id"] if kind == "triptych_panel" else None,
+            "triptych_panel_box": dict(layout["panels"][relative_index - 1]) if kind == "triptych_panel" else None,
+            "prompt": prompt,
+            "scene": scene,
+            "service_role": detail["title"],
+            "title": detail["title"],
+            "final_size": final_size,
+            "height_profile_id": height["id"],
+            "structure_version": V3_STRUCTURE_VERSION,
+            "generation_mode": V3_GENERATION_MODE,
+        })
+    return rows
 
 
 def unique_cover(group_index: int, phone: str, used: set[str]) -> tuple[str, dict[str, Any]]:

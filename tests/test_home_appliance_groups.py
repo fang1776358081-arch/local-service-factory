@@ -53,6 +53,35 @@ class HomeApplianceGroupTests(unittest.TestCase):
         )
         self.assertTrue(all(item["visual_style_version"] == "realistic_mobile_documentary_v2" for item in production))
 
+    def test_v3_group_matches_road_and_truck_delivery_shape(self) -> None:
+        rows = home_groups.build_v3_rows(1401, "13317195304")
+        self.assertEqual(len(rows), 7)
+        self.assertEqual(
+            [row["generation_kind"] for row in rows],
+            ["cover", "triptych_panel", "triptych_panel", "triptych_panel", "detail", "detail", "detail"],
+        )
+        self.assertEqual([row["delivery_position"] for row in rows], [1, 2, 2, 2, 3, 4, 5])
+        self.assertEqual([row["panel_index"] for row in rows[1:4]], [1, 2, 3])
+        self.assertEqual(len({row["service_role"] for row in rows[1:]}), 6)
+        self.assertTrue(all(row["final_size"] == "1024x1536" for row in rows))
+        self.assertTrue(all(row["structure_version"] == home_groups.V3_STRUCTURE_VERSION for row in rows))
+        self.assertIn("13317195304", rows[0]["prompt"])
+        self.assertIn("家电维修", rows[0]["scene"]["store_name"])
+        self.assertIn("救援车", rows[0]["prompt"])
+        self.assertTrue(all("汽车救援" in row["prompt"] for row in rows[1:]))
+        self.assertTrue(all("13317195304" not in row["prompt"] for row in rows[1:]))
+
+    def test_v3_hundred_groups_have_unique_storefronts_and_six_distinct_roles(self) -> None:
+        covers = []
+        names = []
+        for group_index in range(1401, 1501):
+            rows = home_groups.build_v3_rows(group_index, "13317195304")
+            covers.append(rows[0]["scene"]["composition_signature"])
+            names.append(rows[0]["scene"]["store_name"])
+            self.assertEqual(len({row["service_role"] for row in rows[1:]}), 6)
+        self.assertEqual(len(set(covers)), 100)
+        self.assertEqual(len(set(names)), 100)
+
 
 if __name__ == "__main__":
     unittest.main()

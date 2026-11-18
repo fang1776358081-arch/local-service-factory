@@ -65,6 +65,7 @@ SUPPORTED_CATEGORY_IDS = {
     "ktv",
     "pipe_unclogging",
     "road_rescue",
+    "home_appliance_repair",
     "pet_transport",
     "truck_rescue",
 }
@@ -72,11 +73,13 @@ DEFAULT_CATEGORY_ID = "pipe_unclogging"
 CATEGORY_SIGNBOARD_TITLES = {
     "pipe_unclogging": "管道疏通",
     "road_rescue": "汽车救援",
+    "home_appliance_repair": "家电维修",
     "pet_transport": "宠物托运",
     "truck_rescue": "货车救援维修",
 }
 MODEL_GENERATED_SIGNBOARD_CATEGORIES = {
     "road_rescue",
+    "home_appliance_repair",
     "pet_transport",
     "truck_rescue",
 }
@@ -1197,6 +1200,14 @@ def effective_prompt(record: dict[str, Any], phone: str) -> str:
                 "不得出现电话号码、电话图标、电话胶囊、横幅、色条、服务列表、蓝色服务方格、十宫格、按钮、卡片、海报或 UI。"
                 "即使前文提到预留区域，也只能留空实景，不得提前画出本地后期版式。"
                 )
+        if category_id == "home_appliance_repair" and generation_kind == "cover":
+            prepared += (
+                "\n家电维修封面最高优先级覆盖规则：门头联系电话必须由图像模型作为实体招牌排版的一部分自然生成，"
+                f"号码必须清楚准确写成“{phone}”，并与本组指定家电维修店名、服务小字使用同一块实体板面、"
+                "同一透视、同一材质和同一环境光；不得成为悬浮字幕、墙面贴纸或额外广告牌。"
+                "只允许出现家电、厨电、空调、电视、电脑及其维修工具，严格排除汽车救援、货车救援、拖车、"
+                "轮胎、搭电和救援车辆。画面中部与底部保持连续真实场景，不提前生成电话横幅、服务方格、按钮、卡片或UI。"
+            )
         if category_id == "truck_rescue" and generation_kind == "cover":
             tuning_sample_suffix = _tuning_sample_suffix(record)
             group_index = int(record.get("group_index") or 0)
@@ -1406,7 +1417,7 @@ def build_manifest_entries(
             typography_plan = _truck_cover_typography_plan(category_id, group_index)
             if typography_plan is not None:
                 entry["cover_typography_plan"] = typography_plan
-            if category_id == "road_rescue" and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
+            if category_id in {"road_rescue", "home_appliance_repair"} and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
                 entry["cover_center_phone_region"] = cover_center_phone_region(category_id, group_index)
                 entry["cover_bottom_service_region"] = road_rescue_bottom_service_region(group_index)
                 entry["bottom_service_style_id"] = road_rescue_bottom_service_style(group_index)["style_id"]
@@ -2127,7 +2138,7 @@ def plan(
         records = matching_records
     category = load_category_config(category_id)
     service_items = list(category["service_buttons"])
-    expected_service_count = 10 if category_id in {"road_rescue", "truck_rescue"} else 8
+    expected_service_count = 10 if category_id in {"road_rescue", "truck_rescue", "home_appliance_repair"} else 8
     if len(service_items) != expected_service_count:
         raise CategoryPromptError(f"{category_id} service_buttons must contain {expected_service_count} items")
     entries = build_manifest_entries(batch_dir, records, phone, service_items, current_config)
@@ -2412,7 +2423,7 @@ def write_production_files(
         overlay_payload["cover_center_phone_region"] = None
         overlay_payload["cover_bottom_service_region"] = None
         overlay_payload["cover_overlay_style"] = "truck-cover-v3-full-per-group-plan"
-    if category_id == "road_rescue" and group_end > ROAD_RESCUE_COVER_V3_FIRST_GROUP:
+    if category_id in {"road_rescue", "home_appliance_repair"} and group_end > ROAD_RESCUE_COVER_V3_FIRST_GROUP:
         group_styles = {
             str(index): {
                 "version": cover_style_version(category_id, index),
@@ -3188,13 +3199,13 @@ def cover_style_version(category_id: str, group_index: int = 0) -> int:
             if group_index >= truck_cover_typography.FIRST_GROUP
             else TRUCK_RESCUE_COVER_STYLE_VERSION
         )
-    if category_id == "road_rescue" and group_index >= ROAD_RESCUE_MULTI_FOOTER_FIRST_GROUP:
+    if category_id in {"road_rescue", "home_appliance_repair"} and group_index >= ROAD_RESCUE_MULTI_FOOTER_FIRST_GROUP:
         return ROAD_RESCUE_MULTI_FOOTER_STYLE_VERSION
-    if category_id == "road_rescue" and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
+    if category_id in {"road_rescue", "home_appliance_repair"} and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
         return ROAD_RESCUE_COVER_V3_STYLE_VERSION
     return (
         ROAD_RESCUE_COVER_STYLE_VERSION
-        if category_id == "road_rescue"
+        if category_id in {"road_rescue", "home_appliance_repair"}
         else PIPE_COVER_OVERLAY_STYLE_VERSION
     )
 
@@ -3202,7 +3213,7 @@ def cover_style_version(category_id: str, group_index: int = 0) -> int:
 def cover_center_phone_region(category_id: str, group_index: int) -> list[float]:
     if category_id == "truck_rescue" and group_index >= truck_cover_typography.FIRST_GROUP:
         return truck_cover_typography.cover_plan(group_index)["center_phone_region"]
-    if category_id == "road_rescue" and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
+    if category_id in {"road_rescue", "home_appliance_repair"} and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
         return [0.025, 0.50, 0.975, 0.60]
     return [0.025, 0.43, 0.975, 0.535]
 
@@ -3695,7 +3706,7 @@ def apply_overlays(
             if len(service_items) != 10 or not all(isinstance(item, str) and item.strip() for item in service_items):
                 raise CategoryPromptError("货车新版封面叠字必须提供恰好十个非空服务词")
             bottom_service_style = truck_plan["bottom_service_style"]
-        if category_id == "road_rescue" and not interior_profile:
+        if category_id in {"road_rescue", "home_appliance_repair"} and not interior_profile:
             bottom_service_style = road_rescue_bottom_service_style(group_index)
             cover_style = {
                 **cover_style,
@@ -3745,8 +3756,8 @@ def apply_overlays(
         _centered_text(draw, phone_box, phone_text, phone_font, cover_style["phone"], phone_stroke, (0, 0, 0, 255))
 
         service_boxes = _cover_service_boxes(width, height, cover_style["service_layout"], len(service_items))
-        multi_services = category_id == "road_rescue" and not interior_profile and cover_style["service_layout"] in ROAD_RESCUE_SERVICE_TEMPLATES
-        compact_services = category_id == "road_rescue" and not interior_profile and (cover_style["service_layout"] == "compact_five_by_two" or multi_services)
+        multi_services = category_id in {"road_rescue", "home_appliance_repair"} and not interior_profile and cover_style["service_layout"] in ROAD_RESCUE_SERVICE_TEMPLATES
+        compact_services = category_id in {"road_rescue", "home_appliance_repair"} and not interior_profile and (cover_style["service_layout"] == "compact_five_by_two" or multi_services)
         if truck_plan is not None:
             multi_services = not truck_plan["reference_supplement"]
             compact_services = multi_services
@@ -3759,7 +3770,7 @@ def apply_overlays(
                     fill=bottom_service_style["background"],
                 )
                 _draw_road_service_template(draw, width, height, service_boxes, bottom_service_style)
-        elif category_id == "road_rescue" and not interior_profile:
+        elif category_id in {"road_rescue", "home_appliance_repair"} and not interior_profile:
             bottom_service_backing = "opaque_mask"
             service_panel = (
                 int(width * 0.025),
@@ -4017,7 +4028,7 @@ def apply_overlays(
         validation["overlay_profile"] = overlay_profile
         validation["overlay_style"]["center_phone_region"] = phone_region
         validation["overlay_style"]["bottom_service_region"] = [0.045, 0.80, 0.955, 0.965]
-    if role == "cover" and category_id == "road_rescue" and not interior_profile and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
+    if role == "cover" and category_id in {"road_rescue", "home_appliance_repair"} and not interior_profile and group_index >= ROAD_RESCUE_COVER_V3_FIRST_GROUP:
         validation["overlay_style"]["center_phone_region"] = cover_center_phone_region(category_id, group_index)
         validation["overlay_style"]["bottom_service_region"] = road_rescue_bottom_service_region(group_index)
     if role == "cover" and truck_plan is not None:

@@ -211,6 +211,13 @@ def enrich_catalog(category, dimensions, readonly):
         if category=='pet_transport' and b.get('module')=='generate_pet_transport_groups': d['roles']=['detail']
         if category=='pet_transport' and b.get('module')=='tools.category_image_production': d['roles']=['cover']
         if category=='home_appliance_repair' and d['source'].startswith('LOGO_'): d['roles']=['cover']
+        if category=='home_appliance_repair' and d['source'] in {
+            'V3_HEIGHTS', 'V3_LAYOUTS', 'STORE_NAME_PREFIXES',
+            'STORE_NAME_SUFFIXES', 'V3_EXTRA_DETAILS',
+        }:
+            # These are fixed v3 delivery/signage controls. Existing editable
+            # cover and detail pools remain the public prompt variables.
+            dimensions.remove(d);continue
         if category=='pipe_unclogging' and (d['source']=='PIPE_INDOOR_LIGHT' or keys==['environment_details_by_setting','indoor']): d['roles']=['detail']
         if category=='pipe_unclogging' and keys[:1]==['scene_types'] and keys[-1]!='legal_combinations':
             d['status']='legacy';d['description']='旧批次独立素材池；当前在该服务的合法作业组合中一起编辑地点、问题、管道、工具和动作'

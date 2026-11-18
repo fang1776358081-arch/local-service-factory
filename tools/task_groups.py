@@ -28,7 +28,7 @@ def build_group(category, seed, phone, catalog, config):
             final=vc.finish(row,vc.CURRENT.get(),role)
             prompt=text_of(final)
             # Freeze the same effective text used by existing category generation.
-            if category in {'road_rescue','pipe_unclogging','pet_transport','truck_rescue','ktv'}:
+            if category in {'road_rescue','pipe_unclogging','pet_transport','truck_rescue','home_appliance_repair','ktv'}:
                 from tools.category_image_production import effective_prompt
                 prompt=effective_prompt({**row,'prompt':prompt},phone)
             template=vc.read_json(vc.ROOT/'configs/prompt_templates.json')
@@ -64,8 +64,7 @@ def _rows(category,g,phone,config):
         return rows(g,phone,config)
     if category=='home_appliance_repair':
         import generate_home_appliance_groups as m
-        covers,details,_,_=m.build_records(g,1,phone)
-        return covers+details
+        return m.build_v3_rows(g,phone)
     if category=='lock_service':
         import factory
         from tools import lock_prompt_builder as m

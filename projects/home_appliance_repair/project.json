@@ -1,1 +1,37 @@
-{"category":"家电维修：大类包含空调维修、家电清洗、数码维修；小类包含手机维修、电脑维修组装、洗衣机清洗、空调维修、空调移机安装等","category_config_version":"home_appliance_repair_category_content_v1","content_group":{"cover_count":1,"cover_role":"等待参考图分析","detail_count":8,"detail_role":"等待参考图分析","total_images":9},"id":"home_appliance_repair","name":"家电维修","prompt_sources":{"available_complete_detail_sets":118,"category_config_version":"home_appliance_repair_category_content_v1","category_content_profile":"projects/home_appliance_repair/category_content_profile.json","cover_library":"projects/home_appliance_repair/cover_scene_library.json","cover_manifest":"projects/home_appliance_repair/prompts/cover_prompts.jsonl","detail_manifest":"projects/home_appliance_repair/prompts/detail_prompts.jsonl","detail_prompt_count":944,"production_manifest":"projects/home_appliance_repair/groups/production_manifest.jsonl","visual_style":"configs/visual_styles/realistic_mobile_documentary_v2.json","visual_style_version":"realistic_mobile_documentary_v2"},"schema_version":1,"status":"active","visual_style_version":"realistic_mobile_documentary_v2"}
+{
+  "schema_version": 2,
+  "id": "home_appliance_repair",
+  "name": "家电维修",
+  "category": "本地生活服务",
+  "category_config_version": "home_appliance_repair_category_content_v2",
+  "content_group": {
+    "cover_count": 1,
+    "cover_role": "真实中国街边家电维修门店首图",
+    "triptych_count": 1,
+    "triptych_panel_count": 3,
+    "triptych_role": "三个不同家电维修现场组成的一张三拼详情图",
+    "detail_count": 3,
+    "detail_role": "三张互不重复家电维修角色的真实作业详情图",
+    "total_images": 5,
+    "generation_unit_count": 7,
+    "service_roles_per_group": 6,
+    "generation_mode": "independent_triptych_panels",
+    "group_schema": "home_appliance_repair_v3_1cover_1triptych_3details",
+    "structure_version": "home_appliance_repair_v3_1cover_1triptych_3details",
+    "height_rule": "同组五张交付图高度一致；组间按1408、1472、1536像素轮换"
+  },
+  "prompt_sources": {
+    "category_config": "configs/categories/home_appliance_repair.json",
+    "category_config_version": "home_appliance_repair_category_content_v2",
+    "category_content_profile": "projects/home_appliance_repair/category_content_profile.json",
+    "cover_library": "projects/home_appliance_repair/cover_scene_library.json",
+    "legacy_cover_manifest": "projects/home_appliance_repair/prompts/cover_prompts.jsonl",
+    "legacy_detail_manifest": "projects/home_appliance_repair/prompts/detail_prompts.jsonl",
+    "legacy_production_manifest": "projects/home_appliance_repair/groups/production_manifest.jsonl",
+    "legacy_group_schema": "legacy_1_cover_8_details",
+    "visual_style": "configs/visual_styles/realistic_mobile_documentary_v2.json",
+    "visual_style_version": "realistic_mobile_documentary_v2"
+  },
+  "status": "active",
+  "visual_style_version": "realistic_mobile_documentary_v2"
+}
