@@ -1,11 +1,22 @@
 from __future__ import annotations
 
+import json
 import unittest
 
 import generate_home_appliance_groups as home_groups
+from tools import rule_updates
 
 
 class HomeApplianceGroupTests(unittest.TestCase):
+    def test_rule_stage_exports_home_category_config(self) -> None:
+        documents = rule_updates.export_documents()
+        path = "configs/categories/home_appliance_repair.json"
+        self.assertIn(path, documents)
+        exported = json.loads(documents[path])
+        self.assertEqual(exported["category_id"], "home_appliance_repair")
+        self.assertEqual(len(exported["service_items"]), 10)
+        self.assertEqual(exported["image_group_structure"]["generation_unit_count"], 7)
+
     def test_latest_cover_rules_include_physical_phone_and_real_shop(self) -> None:
         prompt, scene = home_groups.cover_prompt(26, "13317195304")
         self.assertIn("真实中国街边家电维修小门店", prompt)

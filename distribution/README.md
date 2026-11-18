@@ -206,7 +206,7 @@ Agent 与看板共用 `python factory.py rules/updates`。命令均从标准输�
 必须先有明确的构建指令。本轮用户要求打包发布安装包和规则，已完成独立运行构建与GitHub发布；运行时及安装/更新链路未改，复用1.3.1实际NSIS证据，旧安装包保留。
 
 1. 官方 Python 3.11.9 x64 嵌入 ZIP 的地址和 SHA256 固定在 `python-runtime.json`。依赖使用 `requirements-runtime.lock` 的 Windows CPython 3.11 轮包哈希。
-2. 使用 Python 3.11 或更高版本，在工厂根目录调用 `python -m tools.stage_distribution --confirm-build --python-zip <ZIP绝对路径> --python-sha256 <已固定摘要> --destination <全新暂存目录>`。该步骤准备干净引擎、37 个基础规则文件、Python 和依赖，并使用内置解释器检查八个业务。不会复制 `.env`、任务、原图、私钥或客户历史。
+2. 使用 Python 3.11 或更高版本，在工厂根目录调用 `python -m tools.stage_distribution --confirm-build --python-zip <ZIP绝对路径> --python-sha256 <已固定摘要> --destination <全新暂存目录>`。该步骤准备干净引擎、当前白名单内的基础规则文件、Python 和依赖，并使用内置解释器检查全部已登记业务。不会复制 `.env`、任务、原图、私钥或客户历史。
 3. 设置本地构建环境的 `FACTORY_DISTRIBUTION_STAGE` 为该暂存目录，使用 Node.js 22 或更高版本，在 dashboard 执行 `npm run build:installer -- --confirm-build`；可设置 `FACTORY_DISTRIBUTION_OUTPUT` 为新的产物目录，保留旧安装包。构建目标 NSIS x64，`--publish never`，不会顺便发布。
 4. 如需 Windows 发布者身份签名，通过 electron-builder 标准 `CSC_LINK` / `CSC_KEY_PASSWORD` 配置 Authenticode 证书；证书和密码不进仓库。应用自己的发布签名校验始终启用，不能代替 Windows 的发布者身份签名。
 5. 明确要求发布后，调用 `updates release-plan`，输入 `{"directory":"构建产物目录"}`；再调用 `updates publish`，输入相同 directory、计划返回的 files，以及 `authorization:"publish_software_update"`。

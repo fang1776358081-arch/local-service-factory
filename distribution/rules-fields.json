@@ -80,6 +80,18 @@
     "style_prompts",
     "camera_scenarios"
   ],
+  "configs/categories/home_appliance_repair.json": [
+    "schema_version",
+    "category_id",
+    "category_name",
+    "business_logic_summary",
+    "scene_types",
+    "service_items",
+    "service_buttons",
+    "cover_signboard_service_items",
+    "image_group_structure",
+    "negative_prompt"
+  ],
   "configs/categories/pet_transport.json": [
     "category_id",
     "category_name",
