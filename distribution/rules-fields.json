@@ -92,6 +92,19 @@
     "image_group_structure",
     "negative_prompt"
   ],
+  "configs/categories/computer_repair.json": [
+    "schema_version",
+    "category_id",
+    "category_name",
+    "business_logic_summary",
+    "scene_types",
+    "brand_service_items",
+    "repair_service_items",
+    "service_items",
+    "service_buttons",
+    "image_group_structure",
+    "negative_prompt"
+  ],
   "configs/categories/pet_transport.json": [
     "category_id",
     "category_name",
@@ -170,6 +183,17 @@
     "required_fields"
   ],
   "projects/home_appliance_repair/project.json": [
+    "schema_version",
+    "id",
+    "name",
+    "category",
+    "status",
+    "content_group",
+    "prompt_sources",
+    "category_config_version",
+    "visual_style_version"
+  ],
+  "projects/computer_repair/project.json": [
     "schema_version",
     "id",
     "name",

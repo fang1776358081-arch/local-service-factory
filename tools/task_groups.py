@@ -65,6 +65,9 @@ def _rows(category,g,phone,config):
     if category=='home_appliance_repair':
         import generate_home_appliance_groups as m
         return m.build_random_pool_rows(g,phone)
+    if category=='computer_repair':
+        import generate_computer_repair_groups as m
+        return m.build_random_pool_rows(g,phone)
     if category=='lock_service':
         import factory
         from tools import lock_prompt_builder as m

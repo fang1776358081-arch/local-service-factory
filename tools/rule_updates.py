@@ -13,7 +13,7 @@ import time
 import zipfile
 from tools import runtime_paths as paths, update_protocol as protocol
 
-PROJECTS=('road_rescue','lock_service','home_appliance_repair','pipe_unclogging','pet_transport','truck_rescue','ktv','business_ktv','diving_salvage')
+PROJECTS=('road_rescue','lock_service','home_appliance_repair','computer_repair','pipe_unclogging','pet_transport','truck_rescue','ktv','business_ktv','diving_salvage')
 CATALOG_FIELDS=('schema_version','category_id','revision','dimensions','readonly')
 PRIVATE_FIELDS={'phone','phones','contact_phones','confirmed_phone','confirmed_phones','phone_source','api_key','api_keys','token','secret','source_thread_id','source_user_turn_id','source_thread_title','import_authorization','reference_files','reference_images','source_images','reference_evidence','source_image','source_file','latest_api_job','latest_groups_review','latest_local_text_review'}
 PHONE=re.compile(r'(?<!\d)(?:1[3-9](?:[ -]?\d){9}|400[ -]?\d{3}[ -]?\d{4}|0\d{2,3}[- ]\d{7,8})(?!\d)')

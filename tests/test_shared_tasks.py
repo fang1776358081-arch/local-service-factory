@@ -128,7 +128,7 @@ class SharedTasks(unittest.TestCase):
    self.assertEqual(lib.read(file.parent/'license.json'),lic)
 
  def test_real_local_render_and_queue_use_isolated_batch(self):
-  for category in ('road_rescue','pet_transport','home_appliance_repair'):
+  for category in ('road_rescue','pet_transport','home_appliance_repair','computer_repair'):
    b=self.batch(category);req=self.request(b,[1])
    with self.ready(),patch.object(lib,'launch',return_value=99999999):
     p=lib.plan(req);task=lib.start({**req,'plan_sha256':p['plan_sha256'],'request_id':'render-'+category,'authorization':'execute_selected_groups'})
@@ -167,6 +167,22 @@ class SharedTasks(unittest.TestCase):
   self.assertEqual(snapshot['business']['service_items'][0],'家电维修')
   with self.ready():
    plan=lib.plan(self.request(b,[1,2]))
+  self.assertEqual(plan['pending_count'],10)
+  self.assertEqual(plan['max_requests'],20)
+
+ def test_computer_repair_batch_has_brand_and_service_watermarks(self):
+  b=self.batch('computer_repair',2)
+  rows=lib.selected(lib.batch_dir(b['category'],b['id']),b,[1,2])
+  self.assertEqual(b['structure']['total_images'],5)
+  self.assertEqual(b['prompt_count'],10)
+  self.assertTrue(all(len(row['units'])==5 for row in rows))
+  self.assertTrue(all({unit['kind'] for unit in row['units']}=={'detail'} for row in rows))
+  self.assertTrue(all(len({unit['service_role'] for unit in row['units']})==5 for row in rows))
+  snapshot=lib.read(lib.batch_dir(b['category'],b['id'])/'snapshot.json')
+  self.assertEqual(snapshot['business']['brand_service_items'],['联想维修','戴尔维修','惠普维修','华硕维修','苹果维修'])
+  self.assertEqual(snapshot['business']['repair_service_items'],['电脑清灰','电脑组装','数据恢复','电脑卡顿','系统重装'])
+  self.assertEqual(len(snapshot['business']['service_items']),10)
+  with self.ready():plan=lib.plan(self.request(b,[1,2]))
   self.assertEqual(plan['pending_count'],10)
   self.assertEqual(plan['max_requests'],20)
 

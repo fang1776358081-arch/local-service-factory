@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "id": "computer_repair",
+  "name": "电脑维修",
+  "category": "本地生活服务",
+  "category_config_version": "computer_repair_category_content_v1",
+  "content_group": {
+    "cover_count": 0,
+    "cover_role": "不使用固定封面",
+    "triptych_count": 0,
+    "triptych_panel_count": 0,
+    "triptych_role": "不使用三拼模板",
+    "detail_count": 5,
+    "detail_role": "五张互不关联、组内维修角色不重复的随机电脑维修现场图",
+    "total_images": 5,
+    "generation_unit_count": 5,
+    "delivery_unit_count": 5,
+    "service_roles_per_group": 5,
+    "generation_mode": "independent_delivery_images",
+    "group_schema": "computer_repair_v1_random_5_images",
+    "structure_version": "computer_repair_v1_random_5_images",
+    "height_rule": "五张原图和成品均为1024x1536",
+    "overlay_rule": "每张成品本地叠加当前维修类目、醒目手机号、五个品牌词和五个服务词"
+  },
+  "prompt_sources": {
+    "category_config": "configs/categories/computer_repair.json",
+    "category_config_version": "computer_repair_category_content_v1",
+    "visual_style": "configs/visual_styles/realistic_mobile_documentary_v2.json",
+    "visual_style_version": "realistic_mobile_documentary_v2"
+  },
+  "status": "active",
+  "visual_style_version": "realistic_mobile_documentary_v2"
+}

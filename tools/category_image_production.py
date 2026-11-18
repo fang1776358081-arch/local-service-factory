@@ -66,6 +66,7 @@ SUPPORTED_CATEGORY_IDS = {
     "pipe_unclogging",
     "road_rescue",
     "home_appliance_repair",
+    "computer_repair",
     "pet_transport",
     "truck_rescue",
 }
@@ -74,12 +75,14 @@ CATEGORY_SIGNBOARD_TITLES = {
     "pipe_unclogging": "管道疏通",
     "road_rescue": "汽车救援",
     "home_appliance_repair": "家电维修",
+    "computer_repair": "电脑维修",
     "pet_transport": "宠物托运",
     "truck_rescue": "货车救援维修",
 }
 MODEL_GENERATED_SIGNBOARD_CATEGORIES = {
     "road_rescue",
     "home_appliance_repair",
+    "computer_repair",
     "pet_transport",
     "truck_rescue",
 }
@@ -2143,7 +2146,7 @@ def plan(
         records = matching_records
     category = load_category_config(category_id)
     service_items = list(category["service_buttons"])
-    expected_service_count = 10 if category_id in {"road_rescue", "truck_rescue", "home_appliance_repair"} else 8
+    expected_service_count = 10 if category_id in {"road_rescue", "truck_rescue", "home_appliance_repair", "computer_repair"} else 8
     if len(service_items) != expected_service_count:
         raise CategoryPromptError(f"{category_id} service_buttons must contain {expected_service_count} items")
     entries = build_manifest_entries(batch_dir, records, phone, service_items, current_config)
