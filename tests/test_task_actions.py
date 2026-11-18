@@ -53,18 +53,18 @@ class TaskActions(unittest.TestCase):
    actual=image_generate.configured_api_keys()
   self.assertEqual(actual,[r['value'] for r in requested])
  def test_worker_uses_more_than_ten_keys_concurrently(self):
-  b=self.batch(count=2);req=self.request(b,[1,2]);barrier=threading.Barrier(12);guard=threading.Lock();state={'calls':0,'active':0,'peak':0}
+  b=self.batch(count=8);req=self.request(b,list(range(1,9)));barrier=threading.Barrier(50);guard=threading.Lock();state={'calls':0,'active':0,'peak':0}
   out=io.BytesIO();Image.new('RGB',(1024,1536),'blue').save(out,format='PNG');payload=out.getvalue()
-  with self.ready(),patch.object(lib,'readiness',return_value=([],list(range(1,13)))),patch.object(lib,'launch',return_value=99999999):
-   plan=lib.plan(req);self.assertEqual(plan['max_workers'],12)
-   task=lib.start({**req,'request_id':'parallel-12','authorization':'execute_selected_groups','plan_sha256':plan['plan_sha256']})
+  with self.ready(),patch.object(lib,'readiness',return_value=([],list(range(1,51)))),patch.object(lib,'launch',return_value=99999999):
+   plan=lib.plan(req);self.assertEqual(plan['max_workers'],50)
+   task=lib.start({**req,'request_id':'parallel-50','authorization':'execute_selected_groups','plan_sha256':plan['plan_sha256']})
    def generate(*args):
     with guard:state['calls']+=1;number=state['calls'];state['active']+=1;state['peak']=max(state['peak'],state['active'])
-    if number<=12:barrier.wait(timeout=8)
+    if number<=50:barrier.wait(timeout=8)
     with guard:state['active']-=1
     return payload
-   worker.run(b['category'],b['id'],task['id'],generate=generate,clients=[(i,object()) for i in range(1,13)],render=lambda *a:None)
-  self.assertEqual(state['peak'],12);self.assertEqual(state['calls'],14)
+   worker.run(b['category'],b['id'],task['id'],generate=generate,clients=[(i,object()) for i in range(1,51)],render=lambda *a:None)
+  self.assertEqual(state['peak'],50);self.assertEqual(state['calls'],56)
  def test_running_targets_block_delete_and_batch_delete_is_scoped(self):
   a=self.batch();b=self.batch();path=lib.batch_dir(a['category'],a['id'])
   file=path/'tasks/live/task.json';lib.write(file,{'category':a['category'],'status':'running','pid':os.getpid()})

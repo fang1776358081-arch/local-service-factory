@@ -1,5 +1,6 @@
 """Isolated dispatch/control invariants, with no provider requests."""
 import collections
+from concurrent.futures import ThreadPoolExecutor
 import threading
 import time
 import unittest
@@ -37,6 +38,22 @@ class UnitDispatch(unittest.TestCase):
         slot,lease=scheduler.claim(tickets[2],[1]);lease.__exit__(None,None,None)
         slot,lease=scheduler.claim(tickets[1],[1]);lease.__exit__(None,None,None)
         with self.assertRaises(ValueError):scheduler.register(a,'a3',[3])
+
+    def test_fifty_local_contenders_do_not_fight_over_filesystem_lock(self):
+        slots=list(range(1,51));state={'category':'road_rescue','batch':'stress','id':'stress','slots':slots}
+        barrier=threading.Barrier(50)
+        def dispatch(slot):
+            barrier.wait(timeout=8)
+            token=scheduler.register(state,f'u{slot:02d}',[slot])
+            claimed=scheduler.claim(token,[slot])
+            self.assertIsNotNone(claimed)
+            actual,lease=claimed
+            try:self.assertEqual(actual,slot)
+            finally:lease.__exit__(None,None,None)
+            scheduler.unregister(token)
+            return actual
+        with ThreadPoolExecutor(max_workers=50) as pool:
+            self.assertEqual(sorted(pool.map(dispatch,slots)),slots)
 
     def test_slow_request_does_not_hold_next_dispatch(self):
         b,task,target,file=self.task();third=threading.Event();guard=threading.Lock();count=[0];observed=[]
