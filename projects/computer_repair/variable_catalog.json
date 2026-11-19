@@ -1,11 +1,516 @@
 {
   "schema_version": 1,
   "category_id": "computer_repair",
-  "revision": 1,
+  "revision": 2,
   "supported_roles": [
+    "cover",
     "detail"
   ],
   "dimensions": [
+    {
+      "id": "ca12aa9d2cb3af",
+      "name": "招牌风格",
+      "source": "COVER_SIGN_STYLES",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_SIGN_STYLES",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_2bf8d55d68eaf6",
+          "name": "略有使用痕迹的蓝白烤漆实体门头，板材接缝和固定螺丝自然可见",
+          "value": "略有使用痕迹的蓝白烤漆实体门头，板材接缝和固定螺丝自然可见",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_0c7b0290fedad3",
+          "name": "普通红白铝塑板实体招牌，边缘有轻微褪色但文字区域整洁",
+          "value": "普通红白铝塑板实体招牌，边缘有轻微褪色但文字区域整洁",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_4a4fe4848f105f",
+          "name": "深蓝配浅灰的社区小店门头，亚克力字与板面投影关系真实",
+          "value": "深蓝配浅灰的社区小店门头，亚克力字与板面投影关系真实",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_6d7544c9fa4fcf",
+          "name": "白底蓝字的简洁灯箱门头，白天未开灯且不带科技感图标",
+          "value": "白底蓝字的简洁灯箱门头，白天未开灯且不带科技感图标",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_4_451af4da1c708a",
+          "name": "橙灰配色的普通街边招牌，包边、雨痕和墙面安装结构清楚",
+          "value": "橙灰配色的普通街边招牌，包边、雨痕和墙面安装结构清楚",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "caa8d170cada3e",
+      "name": "门面建筑",
+      "source": "COVER_FACADES",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_FACADES",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_7e98c5a660405b",
+          "name": "老小区底商的一间电脑维修小店，卷帘门半开，玻璃门旁有普通展示柜",
+          "value": "老小区底商的一间电脑维修小店，卷帘门半开，玻璃门旁有普通展示柜",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_8c9f24e288fd27",
+          "name": "街边一层窄门面，门口摆着待检修主机和纸箱，通道保持可通行",
+          "value": "街边一层窄门面，门口摆着待检修主机和纸箱，通道保持可通行",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_40f76cd5ce8a0f",
+          "name": "社区数码街里的独立维修铺，玻璃门和旧瓷砖墙保留真实使用痕迹",
+          "value": "社区数码街里的独立维修铺，玻璃门和旧瓷砖墙保留真实使用痕迹",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_80564070451903",
+          "name": "居民区转角的小型电脑服务店，门前台阶和相邻商铺自然入镜",
+          "value": "居民区转角的小型电脑服务店，门前台阶和相邻商铺自然入镜",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_4_4050b7008056d3",
+          "name": "普通沿街底商，开间不大，店内维修台和配件货架从门口可以看到",
+          "value": "普通沿街底商，开间不大，店内维修台和配件货架从门口可以看到",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "11333800cfc076",
+      "name": "店内环境",
+      "source": "COVER_INTERIORS",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_INTERIORS",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_fcab2437a6d742",
+          "name": "店内维修台上有一台拆开侧板的主机，师傅正在检查线材",
+          "value": "店内维修台上有一台拆开侧板的主机，师傅正在检查线材",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_d97c7f487dea83",
+          "name": "店内可见笔记本维修台、配件抽屉和少量待维修电脑",
+          "value": "店内可见笔记本维修台、配件抽屉和少量待维修电脑",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_9a7079399f1303",
+          "name": "店内一侧摆放普通显示器和配件货架，另一侧正在进行主机装机",
+          "value": "店内一侧摆放普通显示器和配件货架，另一侧正在进行主机装机",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_6616fcaea260e9",
+          "name": "店内有一台适度RGB灯效的侧透高配主机正在做真实压力测试",
+          "value": "店内有一台适度RGB灯效的侧透高配主机正在做真实压力测试",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_4_2d9dce87bc381d",
+          "name": "店内工作台有万用表、螺丝盒和拆开的电脑，物品自然但不杂乱失控",
+          "value": "店内工作台有万用表、螺丝盒和拆开的电脑，物品自然但不杂乱失控",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "fcb488a097c544",
+      "name": "拍摄机位",
+      "source": "COVER_CAMERAS",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_CAMERAS",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_92d2086f1e1e09",
+          "name": "街对面略偏左的平视手机抓拍，门头与入口完整可见",
+          "value": "街对面略偏左的平视手机抓拍，门头与入口完整可见",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_bbe958f9e20e76",
+          "name": "从门店右前方约三十度斜拍，保留相邻街面和真实透视",
+          "value": "从门店右前方约三十度斜拍，保留相邻街面和真实透视",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_d0534a9d3ab00a",
+          "name": "站在店门外稍近距离拍摄，门头、玻璃门和部分店内工作区同时入镜",
+          "value": "站在店门外稍近距离拍摄，门头、玻璃门和部分店内工作区同时入镜",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_97c60f5a6b223a",
+          "name": "路过门店时略微偏斜的手机随手拍，构图自然且门头仍清楚",
+          "value": "路过门店时略微偏斜的手机随手拍，构图自然且门头仍清楚",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_4_54e56246b0b6f4",
+          "name": "从左侧人行道稍高机位拍摄，门口台阶和营业状态自然可见",
+          "value": "从左侧人行道稍高机位拍摄，门口台阶和营业状态自然可见",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "10a9d5a0eb2f19",
+      "name": "封面光线",
+      "source": "COVER_LIGHTING",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_LIGHTING",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_fbf127f6bea61f",
+          "name": "普通晴天散射光与店内日光灯混合",
+          "value": "普通晴天散射光与店内日光灯混合",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_b9575c7a59af47",
+          "name": "阴天柔和自然光，玻璃反光不过曝",
+          "value": "阴天柔和自然光，玻璃反光不过曝",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_708a1762ff1736",
+          "name": "傍晚街道自然亮度与店内白色日光灯混合，不使用电影感灯光",
+          "value": "傍晚街道自然亮度与店内白色日光灯混合，不使用电影感灯光",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_db0b311d036bd0",
+          "name": "上午侧光照到门面，招牌和店内仍保持正常曝光",
+          "value": "上午侧光照到门面，招牌和店内仍保持正常曝光",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "b1e502d9a3a590",
+      "name": "周边生活元素",
+      "source": "COVER_STREET_ELEMENTS",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_STREET_ELEMENTS",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_335dd0ed3d5193",
+          "name": "门前有普通电动车和少量纸箱，但不遮挡入口与招牌",
+          "value": "门前有普通电动车和少量纸箱，但不遮挡入口与招牌",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_2260f6c4905329",
+          "name": "人行道有自然磨损和一两位模糊路人，不看镜头",
+          "value": "人行道有自然磨损和一两位模糊路人，不看镜头",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_bd605c39242a42",
+          "name": "相邻商铺边缘与社区街景少量入镜，不出现可读店名",
+          "value": "相邻商铺边缘与社区街景少量入镜，不出现可读店名",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_76a6aed48c2ae7",
+          "name": "门口有维修师傅搬运一台主机，动作自然且不摆拍",
+          "value": "门口有维修师傅搬运一台主机，动作自然且不摆拍",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_4_ad0476f8083023",
+          "name": "街面较安静，保留台阶、排水沟和墙面旧痕等生活细节",
+          "value": "街面较安静，保留台阶、排水沟和墙面旧痕等生活细节",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
     {
       "id": "7ee0d3b76f6138",
       "name": "详情机位",

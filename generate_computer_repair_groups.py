@@ -1,4 +1,4 @@
-"""Deterministic five-image groups for the computer repair category."""
+"""Deterministic storefront-plus-detail groups for computer repair."""
 from __future__ import annotations
 
 import random
@@ -9,8 +9,55 @@ from tools import variable_catalog
 
 
 PROJECT_ID = "computer_repair"
-STRUCTURE_VERSION = "computer_repair_v1_random_5_images"
+STRUCTURE_VERSION = "computer_repair_v2_1cover_4random_details"
 GENERATION_MODE = "independent_delivery_images"
+
+COVER_SIGN_STYLES = [
+    "略有使用痕迹的蓝白烤漆实体门头，板材接缝和固定螺丝自然可见",
+    "普通红白铝塑板实体招牌，边缘有轻微褪色但文字区域整洁",
+    "深蓝配浅灰的社区小店门头，亚克力字与板面投影关系真实",
+    "白底蓝字的简洁灯箱门头，白天未开灯且不带科技感图标",
+    "橙灰配色的普通街边招牌，包边、雨痕和墙面安装结构清楚",
+]
+
+COVER_FACADES = [
+    "老小区底商的一间电脑维修小店，卷帘门半开，玻璃门旁有普通展示柜",
+    "街边一层窄门面，门口摆着待检修主机和纸箱，通道保持可通行",
+    "社区数码街里的独立维修铺，玻璃门和旧瓷砖墙保留真实使用痕迹",
+    "居民区转角的小型电脑服务店，门前台阶和相邻商铺自然入镜",
+    "普通沿街底商，开间不大，店内维修台和配件货架从门口可以看到",
+]
+
+COVER_INTERIORS = [
+    "店内维修台上有一台拆开侧板的主机，师傅正在检查线材",
+    "店内可见笔记本维修台、配件抽屉和少量待维修电脑",
+    "店内一侧摆放普通显示器和配件货架，另一侧正在进行主机装机",
+    "店内有一台适度RGB灯效的侧透高配主机正在做真实压力测试",
+    "店内工作台有万用表、螺丝盒和拆开的电脑，物品自然但不杂乱失控",
+]
+
+COVER_CAMERAS = [
+    "街对面略偏左的平视手机抓拍，门头与入口完整可见",
+    "从门店右前方约三十度斜拍，保留相邻街面和真实透视",
+    "站在店门外稍近距离拍摄，门头、玻璃门和部分店内工作区同时入镜",
+    "路过门店时略微偏斜的手机随手拍，构图自然且门头仍清楚",
+    "从左侧人行道稍高机位拍摄，门口台阶和营业状态自然可见",
+]
+
+COVER_LIGHTING = [
+    "普通晴天散射光与店内日光灯混合",
+    "阴天柔和自然光，玻璃反光不过曝",
+    "傍晚街道自然亮度与店内白色日光灯混合，不使用电影感灯光",
+    "上午侧光照到门面，招牌和店内仍保持正常曝光",
+]
+
+COVER_STREET_ELEMENTS = [
+    "门前有普通电动车和少量纸箱，但不遮挡入口与招牌",
+    "人行道有自然磨损和一两位模糊路人，不看镜头",
+    "相邻商铺边缘与社区街景少量入镜，不出现可读店名",
+    "门口有维修师傅搬运一台主机，动作自然且不摆拍",
+    "街面较安静，保留台阶、排水沟和墙面旧痕等生活细节",
+]
 
 DETAIL_CAMERA_STYLES = [
     "维修台前平视近景手机随手拍，完整看到设备、双手和工具",
@@ -222,6 +269,41 @@ DETAILS = (
 )
 
 
+@variable_catalog.managed(PROJECT_ID, "cover", finish_result="always")
+def cover_prompt(group_index: int, phone: str) -> tuple[str, dict[str, Any]]:
+    rng = random.Random(f"{PROJECT_ID}:cover:{group_index}")
+    scene = {
+        "sign_style": rng.choice(COVER_SIGN_STYLES),
+        "facade": rng.choice(COVER_FACADES),
+        "interior": rng.choice(COVER_INTERIORS),
+        "camera": rng.choice(COVER_CAMERAS),
+        "lighting": rng.choice(COVER_LIGHTING),
+        "street": rng.choice(COVER_STREET_ELEMENTS),
+        "visual_style_version": visual_style_profiles.visual_style_version(PROJECT_ID),
+        "category_config_version": "computer_repair_category_content_v3",
+    }
+    scene["composition_signature"] = " | ".join(scene.values())
+    prompt = (
+        "一张真实中国街边电脑维修小门店的竖版普通手机随手拍照片，作为本组第一张门店封面。"
+        "必须像顾客实际路过拍到的正在营业的小店，不是招牌设计稿、广告海报、门店效果图、科技展厅或高端连锁店。"
+        f"建筑与门面：{scene['facade']}；实体门头：{scene['sign_style']}；店内状态：{scene['interior']}。"
+        f"拍摄机位：{scene['camera']}；光线：{scene['lighting']}；街边生活元素：{scene['street']}。"
+        "主招牌必须是建筑上真实安装的实体板面，清楚准确写有“电脑维修”四个中文大字；"
+        f"同一块实体主招牌内还必须清楚完整写有“电话：{phone}”或“联系电话：{phone}”，每个数字准确可读。"
+        "门头电话优先位于类目名称下方或右侧联系信息区，不得放在门下横幅、立柱、墙面、车辆、立牌、店内背景或悬浮字幕上。"
+        "招牌文字和电话要与板面保持一致透视、光照、阴影、反光及安装关系，不生成其他店名、其他号码、价格、地区或服务承诺。"
+        "店内外可以看到真实的笔记本、台式主机、显示器、配件货架和维修工具；若出现侧透高配主机或适度RGB灯效，"
+        "必须处于装机、检测或维修状态，不能像电竞产品广告。允许一名穿普通深色工装的师傅自然工作且不看镜头。"
+        "画面中部49%至58.5%保留连续且相对安静的真实背景，避开人脸、招牌电话和核心维修动作，供本地程序叠加醒目大电话；"
+        "底部83.5%至97.5%保留街面、台阶或安静背景，供本地程序叠加五个品牌维修词和五个电脑服务词。"
+        "原图不要生成中部电话条、底部服务词、按钮、卡片、宫格、二维码、水印、真实品牌Logo、可读系统界面或客户资料。"
+        "严格排除手机维修、家电维修、汽车救援、货车维修、拖车、轮胎、搭电、欧美街景、豪华科技展厅、"
+        "电竞广告海报、插画、CG、3D、乱码堆叠、畸形人物和不合理维修工具。"
+    )
+    prompt += visual_style_profiles.prompt_suffix(PROJECT_ID, "storefront_cover")
+    return prompt, scene
+
+
 @variable_catalog.managed(PROJECT_ID, "detail", finish_result="always")
 def detail_prompt(group_index: int, detail: dict[str, Any], relative_index: int) -> tuple[str, dict[str, Any]]:
     rng = random.Random(f"{PROJECT_ID}:detail:{detail['slug']}:{group_index}:{relative_index}")
@@ -233,7 +315,7 @@ def detail_prompt(group_index: int, detail: dict[str, Any], relative_index: int)
         "lighting": rng.choice(DETAIL_LIGHTING),
         "worker": rng.choice(DETAIL_WORKER_STATES),
         "visual_style_version": visual_style_profiles.visual_style_version(PROJECT_ID),
-        "category_config_version": "computer_repair_category_content_v2",
+        "category_config_version": "computer_repair_category_content_v3",
     }
     scene["composition_signature"] = " | ".join(scene.values())
     prompt = (
@@ -256,9 +338,22 @@ def detail_prompt(group_index: int, detail: dict[str, Any], relative_index: int)
 
 
 def build_random_pool_rows(group_index: int, phone: str) -> list[dict[str, Any]]:
-    roles = random.Random(f"{PROJECT_ID}:roles:{group_index}").sample(list(DETAILS), 5)
-    rows: list[dict[str, Any]] = []
-    for position, detail in enumerate(roles, start=1):
+    roles = random.Random(f"{PROJECT_ID}:roles:{group_index}").sample(list(DETAILS), 4)
+    cover_text, cover_scene = cover_prompt(group_index, phone)
+    rows: list[dict[str, Any]] = [{
+        "role": "cover",
+        "generation_kind": "cover",
+        "generation_role": "cover",
+        "delivery_position": 1,
+        "prompt": cover_text,
+        "scene": cover_scene,
+        "service_role": None,
+        "final_size": "1024x1536",
+        "height_profile_id": "full_1536",
+        "structure_version": STRUCTURE_VERSION,
+        "generation_mode": GENERATION_MODE,
+    }]
+    for position, detail in enumerate(roles, start=2):
         prompt, scene = detail_prompt(group_index, detail, position)
         rows.append({
             "role": "detail",

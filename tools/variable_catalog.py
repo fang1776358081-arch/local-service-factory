@@ -29,7 +29,7 @@ MODULES = {
                  ('tools.road_environment_variants', ['ENVIRONMENTS','INCIDENTAL_TYPES']), ('tools.road_postprocess_variants', ['POSTPROCESS_PRESETS']),
                  ('tools.road_snapshot_variants',['FLAWS','ROLL_ANGLES'])],
  'home_appliance_repair': [('generate_home_appliance_groups', None)],
- 'computer_repair': [('generate_computer_repair_groups', ['DETAIL_CAMERA_STYLES','DETAIL_LIGHTING','DETAIL_WORKER_STATES','DETAILS'])],
+ 'computer_repair': [('generate_computer_repair_groups', ['COVER_SIGN_STYLES','COVER_FACADES','COVER_INTERIORS','COVER_CAMERAS','COVER_LIGHTING','COVER_STREET_ELEMENTS','DETAIL_CAMERA_STYLES','DETAIL_LIGHTING','DETAIL_WORKER_STATES','DETAILS'])],
  'pet_transport': [('generate_pet_transport_groups', ['DETAIL_ACTIONS','LOCATIONS','PET_CONTEXTS','CAMERAS','LIGHTING']),('tools.category_image_production',['PET_STORE_NAMES','PET_VEHICLES','PET_ACTIONS'])],
  'truck_rescue': [('generate_truck_rescue_groups', ['CAMERAS','LIGHTING']),('tools.truck_scene_diversity_v3',['EVENTS','DETAIL_CAMERAS','LOCATIONS','LIGHTS','WORKWEAR','COVER_FRAMES','COVER_EVENTS','LEARNED_COMPOSITIONS','COVER_WORK_DETAILS']),('tools.truck_shared_variants',['CAPTURE_DEVICES','PHOTO_TREATMENTS','SNAPSHOT_FLAWS','HANDHELD_ROLL','BACKGROUND_ELEMENTS','HEAVY_VEHICLES','OTHER_VEHICLES','COVER_ENVIRONMENTS','SIGN_MATERIALS','SIGN_LAYOUTS','SIGN_WEAR'])],
  'lock_service': [('factory', ['LOCK_SERVICE_COVER_VARIANTS','LOCK_SERVICE_DETAIL_VARIANTS'])],
@@ -202,7 +202,7 @@ def defaults(category):
             d['name'] = (keys[1]+' · '+d['name']) if len(keys)>1 and keys[0]=='scene_types' else d['name']+' · '+d['source']
     if category=='business_ktv':
         for d in dimensions: d['roles']=['detail']
-    detail_only = category in {'business_ktv', 'computer_repair'}
+    detail_only = category == 'business_ktv'
     return {'schema_version':1,'category_id':category,'revision':0,'supported_roles':['detail'] if detail_only else ['cover','detail'],'dimensions':dimensions,'readonly':readonly}
 
 

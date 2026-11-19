@@ -28,15 +28,19 @@ class ComputerRepairGroupTests(unittest.TestCase):
             "computer_repair",
         )
 
-    def test_random_group_has_five_distinct_computer_scenes(self) -> None:
+    def test_group_has_storefront_cover_and_four_distinct_scenes(self) -> None:
         rows = computer_groups.build_random_pool_rows(1401, "13800138000")
         self.assertEqual(len(rows), 5)
-        self.assertEqual([row["generation_kind"] for row in rows], ["detail"] * 5)
+        self.assertEqual([row["generation_kind"] for row in rows], ["cover"] + ["detail"] * 4)
         self.assertEqual([row["delivery_position"] for row in rows], [1, 2, 3, 4, 5])
-        self.assertEqual(len({row["service_role"] for row in rows}), 5)
+        self.assertIsNone(rows[0]["service_role"])
+        self.assertEqual(len({row["service_role"] for row in rows[1:]}), 4)
         self.assertTrue(all(row["final_size"] == "1024x1536" for row in rows))
         self.assertTrue(all(row["structure_version"] == computer_groups.STRUCTURE_VERSION for row in rows))
-        self.assertTrue(all("本地添加醒目手机号" in row["prompt"] for row in rows))
+        self.assertIn("电脑维修小门店", rows[0]["prompt"])
+        self.assertIn("电话：13800138000", rows[0]["prompt"])
+        self.assertIn("同一块实体主招牌", rows[0]["prompt"])
+        self.assertTrue(all("本地添加醒目手机号" in row["prompt"] for row in rows[1:]))
         self.assertTrue(all("汽车救援" in row["prompt"] for row in rows))
         self.assertTrue(all("品牌Logo" in row["prompt"] for row in rows))
 
@@ -44,9 +48,9 @@ class ComputerRepairGroupTests(unittest.TestCase):
         prompts = []
         for group_index in range(1401, 1501):
             rows = computer_groups.build_random_pool_rows(group_index, "13800138000")
-            self.assertEqual(len({row["service_role"] for row in rows}), 5)
+            self.assertEqual(len({row["service_role"] for row in rows[1:]}), 4)
             prompts.extend(row["prompt"] for row in rows)
-        self.assertGreaterEqual(len(set(prompts)), 490)
+        self.assertGreaterEqual(len(set(prompts)), 485)
 
     def test_high_spec_and_fault_diagnosis_scenes_are_in_random_pool(self) -> None:
         titles = {detail["title"] for detail in computer_groups.DETAILS}
@@ -65,7 +69,7 @@ class ComputerRepairGroupTests(unittest.TestCase):
 
     def test_high_spec_candidate_reaches_local_variable_preview(self) -> None:
         catalog = variable_catalog.load("computer_repair")
-        self.assertEqual(catalog["supported_roles"], ["detail"])
+        self.assertEqual(catalog["supported_roles"], ["cover", "detail"])
         dimension = next(
             item for item in catalog["dimensions"]
             if item["source"] == "DETAILS.high_end_gaming_build.actions"
@@ -77,6 +81,22 @@ class ComputerRepairGroupTests(unittest.TestCase):
         )
         self.assertEqual(len(previews), 3)
         self.assertTrue(all("高配主机组装" in row["prompt"] for row in previews))
+        self.assertTrue(all(option["value"] in row["prompt"] for row in previews))
+        self.assertTrue(all(row["api_called"] is False for row in previews))
+
+    def test_cover_candidate_reaches_local_variable_preview(self) -> None:
+        catalog = variable_catalog.load("computer_repair")
+        dimension = next(
+            item for item in catalog["dimensions"]
+            if item["source"] == "COVER_CAMERAS"
+        )
+        option = dimension["options"][0]
+        previews = variable_catalog.preview(
+            "computer_repair",
+            {"catalog": catalog, "role": "cover", "force": {dimension["id"]: option["id"]}},
+        )
+        self.assertEqual(len(previews), 3)
+        self.assertTrue(all("电脑维修" in row["prompt"] for row in previews))
         self.assertTrue(all(option["value"] in row["prompt"] for row in previews))
         self.assertTrue(all(row["api_called"] is False for row in previews))
 
@@ -95,7 +115,7 @@ class ComputerRepairGroupTests(unittest.TestCase):
                 Path(folder), 1, 1, "computer_repair"
             )
         self.assertEqual(len(selected), 5)
-        self.assertEqual([row["generation_kind"] for row in selected], ["detail"] * 5)
+        self.assertEqual([row["generation_kind"] for row in selected], ["cover"] + ["detail"] * 4)
         self.assertEqual([row["delivery_position"] for row in selected], [1, 2, 3, 4, 5])
 
 

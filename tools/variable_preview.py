@@ -25,7 +25,8 @@ def real_prompt(category,group,role):
         slug=next((d['binding']['detail'] for d in forced_dimensions if d.get('binding',{}).get('detail')),DETAILS[0]['slug'])
         return cover_prompt(group,phone(category)) if role=='cover' else detail_prompt(group,next(d for d in DETAILS if d['slug']==slug))
     if category=='computer_repair':
-        from generate_computer_repair_groups import detail_prompt,DETAILS
+        from generate_computer_repair_groups import cover_prompt,detail_prompt,DETAILS
+        if role=='cover': return cover_prompt(group,phone(category))
         slug=next((d['binding']['detail'] for d in forced_dimensions if d.get('binding',{}).get('detail')),DETAILS[0]['slug'])
         detail=next(d for d in DETAILS if d['slug']==slug)
         return detail_prompt(group,detail,1)
