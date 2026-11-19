@@ -59,6 +59,44 @@ COVER_STREET_ELEMENTS = [
     "街面较安静，保留台阶、排水沟和墙面旧痕等生活细节",
 ]
 
+COVER_STORE_NAME_PREFIXES = [
+    "老李",
+    "老王",
+    "老陈",
+    "阿诚",
+    "小周",
+    "千米",
+    "邻里",
+    "安心",
+    "快捷",
+    "诚心",
+    "百信",
+    "顺手",
+    "好帮手",
+    "新起点",
+    "一站式",
+]
+
+COVER_STORE_NAME_SUFFIXES = [
+    "电脑维修",
+    "电脑快修",
+    "电脑服务",
+    "电脑维修部",
+]
+
+COVER_SIGN_SERVICE_ITEMS = [
+    "电脑清灰",
+    "电脑组装",
+    "数据恢复",
+    "系统重装",
+    "电脑卡顿",
+    "不开机维修",
+    "硬盘升级",
+    "内存升级",
+    "主板维修",
+    "故障诊断",
+]
+
 DETAIL_CAMERA_STYLES = [
     "维修台前平视近景手机随手拍，完整看到设备、双手和工具",
     "从师傅肩侧约三十度斜拍，突出拆机位置和真实操作关系",
@@ -272,7 +310,14 @@ DETAILS = (
 @variable_catalog.managed(PROJECT_ID, "cover", finish_result="always")
 def cover_prompt(group_index: int, phone: str) -> tuple[str, dict[str, Any]]:
     rng = random.Random(f"{PROJECT_ID}:cover:{group_index}")
+    store_name = f"{rng.choice(COVER_STORE_NAME_PREFIXES)}{rng.choice(COVER_STORE_NAME_SUFFIXES)}"
+    sign_services = rng.sample(COVER_SIGN_SERVICE_ITEMS, rng.choice((4, 5)))
     scene = {
+        "store_name": store_name,
+        "store_name_prefix": store_name.removesuffix(next(suffix for suffix in COVER_STORE_NAME_SUFFIXES if store_name.endswith(suffix))),
+        "store_name_suffix": next(suffix for suffix in COVER_STORE_NAME_SUFFIXES if store_name.endswith(suffix)),
+        "sign_service_items": sign_services,
+        "sign_services": "、".join(sign_services),
         "sign_style": rng.choice(COVER_SIGN_STYLES),
         "facade": rng.choice(COVER_FACADES),
         "interior": rng.choice(COVER_INTERIORS),
@@ -280,18 +325,22 @@ def cover_prompt(group_index: int, phone: str) -> tuple[str, dict[str, Any]]:
         "lighting": rng.choice(COVER_LIGHTING),
         "street": rng.choice(COVER_STREET_ELEMENTS),
         "visual_style_version": visual_style_profiles.visual_style_version(PROJECT_ID),
-        "category_config_version": "computer_repair_category_content_v3",
+        "category_config_version": "computer_repair_category_content_v4",
     }
-    scene["composition_signature"] = " | ".join(scene.values())
+    scene["composition_signature"] = " | ".join(
+        "、".join(value) if isinstance(value, list) else str(value)
+        for value in scene.values()
+    )
     prompt = (
         "一张真实中国街边电脑维修小门店的竖版普通手机随手拍照片，作为本组第一张门店封面。"
         "必须像顾客实际路过拍到的正在营业的小店，不是招牌设计稿、广告海报、门店效果图、科技展厅或高端连锁店。"
         f"建筑与门面：{scene['facade']}；实体门头：{scene['sign_style']}；店内状态：{scene['interior']}。"
         f"拍摄机位：{scene['camera']}；光线：{scene['lighting']}；街边生活元素：{scene['street']}。"
-        "主招牌必须是建筑上真实安装的实体板面，清楚准确写有“电脑维修”四个中文大字；"
+        f"主招牌必须是建筑上真实安装的实体板面，清楚准确写有店名“{store_name}”；店名中的“电脑维修”“电脑快修”或“电脑服务”必须醒目可读。"
+        f"同一块主招牌上还要自然排一行较小的可维修项目：“{'、'.join(sign_services)}”，项目文字不能大于店名，不能排成按钮或悬浮贴纸；"
         f"同一块实体主招牌内还必须清楚完整写有“电话：{phone}”或“联系电话：{phone}”，每个数字准确可读。"
         "门头电话优先位于类目名称下方或右侧联系信息区，不得放在门下横幅、立柱、墙面、车辆、立牌、店内背景或悬浮字幕上。"
-        "招牌文字和电话要与板面保持一致透视、光照、阴影、反光及安装关系，不生成其他店名、其他号码、价格、地区或服务承诺。"
+        "招牌店名、项目文字和电话要与板面保持一致透视、光照、阴影、反光及安装关系，不生成其他店名、其他号码、价格、地区或服务承诺。"
         "店内外可以看到真实的笔记本、台式主机、显示器、配件货架和维修工具；若出现侧透高配主机或适度RGB灯效，"
         "必须处于装机、检测或维修状态，不能像电竞产品广告。允许一名穿普通深色工装的师傅自然工作且不看镜头。"
         "画面中部49%至58.5%保留连续且相对安静的真实背景，避开人脸、招牌电话和核心维修动作，供本地程序叠加醒目大电话；"

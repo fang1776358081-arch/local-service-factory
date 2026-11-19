@@ -40,17 +40,34 @@ class ComputerRepairGroupTests(unittest.TestCase):
         self.assertIn("电脑维修小门店", rows[0]["prompt"])
         self.assertIn("电话：13800138000", rows[0]["prompt"])
         self.assertIn("同一块实体主招牌", rows[0]["prompt"])
+        self.assertIn(rows[0]["scene"]["store_name"], rows[0]["prompt"])
+        self.assertIn(rows[0]["scene"]["sign_services"], rows[0]["prompt"])
+        self.assertIn(
+            rows[0]["scene"]["store_name"],
+            {
+                f"{prefix}{suffix}"
+                for prefix in computer_groups.COVER_STORE_NAME_PREFIXES
+                for suffix in computer_groups.COVER_STORE_NAME_SUFFIXES
+            },
+        )
+        self.assertIn(len(rows[0]["scene"]["sign_services"].split("、")), (4, 5))
         self.assertTrue(all("本地添加醒目手机号" in row["prompt"] for row in rows[1:]))
         self.assertTrue(all("汽车救援" in row["prompt"] for row in rows))
         self.assertTrue(all("品牌Logo" in row["prompt"] for row in rows))
 
     def test_hundred_groups_remain_diverse_and_group_unique(self) -> None:
         prompts = []
+        store_names = []
+        service_lines = []
         for group_index in range(1401, 1501):
             rows = computer_groups.build_random_pool_rows(group_index, "13800138000")
             self.assertEqual(len({row["service_role"] for row in rows[1:]}), 4)
             prompts.extend(row["prompt"] for row in rows)
+            store_names.append(rows[0]["scene"]["store_name"])
+            service_lines.append(rows[0]["scene"]["sign_services"])
         self.assertGreaterEqual(len(set(prompts)), 485)
+        self.assertGreaterEqual(len(set(store_names)), 35)
+        self.assertGreaterEqual(len(set(service_lines)), 80)
 
     def test_high_spec_and_fault_diagnosis_scenes_are_in_random_pool(self) -> None:
         titles = {detail["title"] for detail in computer_groups.DETAILS}

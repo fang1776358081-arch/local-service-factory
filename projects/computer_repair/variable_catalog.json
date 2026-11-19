@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "category_id": "computer_repair",
-  "revision": 2,
+  "revision": 3,
   "supported_roles": [
     "cover",
     "detail"
@@ -500,6 +500,286 @@
           "id": "o_4_ad0476f8083023",
           "name": "街面较安静，保留台阶、排水沟和墙面旧痕等生活细节",
           "value": "街面较安静，保留台阶、排水沟和墙面旧痕等生活细节",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "bd92c0d1f97910",
+      "name": "COVER_STORE_NAME_PREFIXES",
+      "source": "COVER_STORE_NAME_PREFIXES",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_STORE_NAME_PREFIXES",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_bd2d9c1aaf7226",
+          "name": "老李",
+          "value": "老李",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_0ae0866d91d104",
+          "name": "老王",
+          "value": "老王",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_49a9cca581bb73",
+          "name": "老陈",
+          "value": "老陈",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_7dbeb67f891c8a",
+          "name": "阿诚",
+          "value": "阿诚",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_4_0dcf386958c76a",
+          "name": "小周",
+          "value": "小周",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_5_4e79b8601691db",
+          "name": "千米",
+          "value": "千米",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_6_bf6216762b5a97",
+          "name": "邻里",
+          "value": "邻里",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_7_3fa21ef085b334",
+          "name": "安心",
+          "value": "安心",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_8_271813e7b6b4a4",
+          "name": "快捷",
+          "value": "快捷",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_9_5ca6492839a86e",
+          "name": "诚心",
+          "value": "诚心",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_10_cc9dfad3211b54",
+          "name": "百信",
+          "value": "百信",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_11_fc38e1dbf9cc4d",
+          "name": "顺手",
+          "value": "顺手",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_12_9fad556796971e",
+          "name": "好帮手",
+          "value": "好帮手",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_13_fc73f60e3cfe9b",
+          "name": "新起点",
+          "value": "新起点",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_14_45d2b0a61822f4",
+          "name": "一站式",
+          "value": "一站式",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        }
+      ],
+      "status": "active"
+    },
+    {
+      "id": "9285bd549be38e",
+      "name": "COVER_STORE_NAME_SUFFIXES",
+      "source": "COVER_STORE_NAME_SUFFIXES",
+      "description": "已有生成器候选池；保存后用于新组装",
+      "kind": "builtin",
+      "binding": {
+        "module": "generate_computer_repair_groups",
+        "name": "COVER_STORE_NAME_SUFFIXES",
+        "tuple": false
+      },
+      "roles": [
+        "cover"
+      ],
+      "probability": 1.0,
+      "min_select": 1,
+      "max_select": 1,
+      "fixed_shape": false,
+      "schema": {
+        "type": "string",
+        "allow_empty": false
+      },
+      "options": [
+        {
+          "id": "o_0_faefdef3dbe8ed",
+          "name": "电脑维修",
+          "value": "电脑维修",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_1_82aa5abb0a5685",
+          "name": "电脑快修",
+          "value": "电脑快修",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_2_3980d72a3e1f91",
+          "name": "电脑服务",
+          "value": "电脑服务",
+          "schema": {
+            "type": "string",
+            "allow_empty": false
+          },
+          "weight": 1.0,
+          "enabled": true,
+          "conditions": []
+        },
+        {
+          "id": "o_3_fb76449911e0be",
+          "name": "电脑维修部",
+          "value": "电脑维修部",
           "schema": {
             "type": "string",
             "allow_empty": false

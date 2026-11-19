@@ -3,10 +3,10 @@
   "id": "computer_repair",
   "name": "电脑维修",
   "category": "本地生活服务",
-  "category_config_version": "computer_repair_category_content_v3",
+  "category_config_version": "computer_repair_category_content_v4",
   "content_group": {
     "cover_count": 1,
-    "cover_role": "真实中国街边电脑维修门店封面，实体主招牌包含电脑维修和本批次手机号",
+    "cover_role": "真实中国街边电脑维修门店封面，实体主招牌随机使用拟人化或名称化店名，并包含本批次手机号及四至五项维修项目",
     "triptych_count": 0,
     "triptych_panel_count": 0,
     "triptych_role": "不使用三拼模板",
@@ -24,7 +24,7 @@
   },
   "prompt_sources": {
     "category_config": "configs/categories/computer_repair.json",
-    "category_config_version": "computer_repair_category_content_v3",
+    "category_config_version": "computer_repair_category_content_v4",
     "visual_style": "configs/visual_styles/realistic_mobile_documentary_v2.json",
     "visual_style_version": "realistic_mobile_documentary_v2"
   },
