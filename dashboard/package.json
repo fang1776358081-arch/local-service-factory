@@ -1,6 +1,6 @@
 {
   "name": "road-rescue-dashboard",
-  "version": "1.4.33",
+  "version": "1.4.34",
   "description": "Local dashboard for road-rescue image generation jobs",
   "main": "main.js",
   "author": "Road Rescue Image Factory",
